@@ -1,0 +1,135 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "ColorMap[]",
+  "type": "array",
+  "items": {
+    "$ref": "#/definitions/ColorMap"
+  },
+  "definitions": {
+    "ColorMap": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string"
+        },
+        "texture": {
+          "$ref": "#/definitions/CompositeTexture"
+        },
+        "padding": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "loadIntoBlockTextureAtlas": {
+          "type": "boolean"
+        },
+        "extraFlags": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "pixels": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "outerSize": {
+          "$ref": "#/definitions/Size2i"
+        },
+        "blockAtlasTextureSubId": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "rectIndex": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "CompositeTexture": {
+      "type": "object",
+      "description": "A single block texture",
+      "properties": {
+        "base": {
+          "type": "string",
+          "description": "The basic texture for this composite texture"
+        },
+        "overlays": {
+          "type": "array",
+          "description": "The base texture may be overlayed with any quantity of textures. These are baked together during texture atlas creation",
+          "items": {
+            "type": "string"
+          }
+        },
+        "alternates": {
+          "type": "array",
+          "description": "The texture may consists of any amount of alternatives, one of which will be randomly chosen when the block is placed in the world.",
+          "items": {
+            "$ref": "#/definitions/CompositeTexture"
+          }
+        },
+        "baked": {
+          "description": "BakedCompositeTexture is an expanded, atlas friendly version of CompositeTexture. Required during texture atlas generation.",
+          "oneOf": [
+            {
+              "$ref": "#/definitions/BakedCompositeTexture"
+            }
+          ]
+        },
+        "rotation": {
+          "type": "integer",
+          "description": "Rotation of the texture may only be a multiple of 90",
+          "format": "int32"
+        },
+        "alpha": {
+          "type": "integer",
+          "description": "Can be used to modify the opacity of the texture",
+          "format": "int32"
+        }
+      }
+    },
+    "BakedCompositeTexture": {
+      "type": "object",
+      "description": "An expanded, atlas-friendly version of a CompositeTexture",
+      "properties": {
+        "textureSubId": {
+          "type": "integer",
+          "description": "Unique identifier for this texture",
+          "format": "int32"
+        },
+        "bakedName": {
+          "type": "string",
+          "description": "The Base name and Overlay concatenated (if there was any defined)"
+        },
+        "textureFilenames": {
+          "type": "array",
+          "description": "The base name and overlays as array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "bakedVariants": {
+          "type": "array",
+          "description": "If non-null also contains BakedName",
+          "items": {
+            "$ref": "#/definitions/BakedCompositeTexture"
+          }
+        }
+      }
+    },
+    "Size2i": {
+      "type": "object",
+      "description": "Represents a vector of 2 doubles. Go bug Tyron of you need more utility methods in this class.",
+      "properties": {
+        "width": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "height": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    }
+  }
+}

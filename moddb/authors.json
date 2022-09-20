@@ -1,0 +1,32 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "statuscode": {
+      "type": "string"
+    },
+    "authors": {
+      "type": "array",
+      "items": [
+        {
+          "type": "object",
+          "properties": {
+            "userid": {
+              "type": "integer"
+            },
+            "name": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "userid",
+            "name",
+          ]
+        }
+      ]
+    }
+  },
+  "required": [
+    "statuscode"
+  ]
+}

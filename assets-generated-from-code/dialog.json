@@ -1,0 +1,776 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "JsonDialogSettings",
+  "type": "object",
+  "properties": {
+    "code": {
+      "type": "string"
+    },
+    "alignment": {
+      "$ref": "#/definitions/EnumDialogArea"
+    },
+    "posX": {
+      "type": "number",
+      "format": "float"
+    },
+    "posY": {
+      "type": "number",
+      "format": "float"
+    },
+    "rows": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/DialogRow"
+      }
+    },
+    "sizeMultiplier": {
+      "type": "number",
+      "format": "double"
+    },
+    "padding": {
+      "type": "number",
+      "format": "double"
+    },
+    "disableWorldInteract": {
+      "type": "boolean"
+    },
+    "onSet": {
+      "description": "Called whenever the value of a input field has changed",
+      "oneOf": [
+        {
+          "$ref": "#/definitions/OnValueSetDelegate"
+        }
+      ]
+    },
+    "onGet": {
+      "description": "Called when the dialog is opened the first time or when dialog.ReloadValues() is called. Should return the values the input fields should be set to",
+      "oneOf": [
+        {
+          "$ref": "#/definitions/OnValueGetDelegate"
+        }
+      ]
+    }
+  },
+  "definitions": {
+    "EnumDialogArea": {
+      "type": "string",
+      "description": "First word = X Alignment (left, center, right or fixed)\nSecond word = Y Alignment (top, middle, bottom or fixed)",
+      "x-enumNames": [
+        "None",
+        "LeftTop",
+        "LeftMiddle",
+        "LeftBottom",
+        "LeftFixed",
+        "CenterTop",
+        "CenterMiddle",
+        "CenterBottom",
+        "CenterFixed",
+        "RightTop",
+        "RightMiddle",
+        "RightBottom",
+        "RightFixed",
+        "FixedTop",
+        "FixedMiddle",
+        "FixedBottom",
+        "TextBaselineOffset"
+      ],
+      "enum": [
+        "none",
+        "leftTop",
+        "leftMiddle",
+        "leftBottom",
+        "leftFixed",
+        "centerTop",
+        "centerMiddle",
+        "centerBottom",
+        "centerFixed",
+        "rightTop",
+        "rightMiddle",
+        "rightBottom",
+        "rightFixed",
+        "fixedTop",
+        "fixedMiddle",
+        "fixedBottom",
+        "textBaselineOffset"
+      ]
+    },
+    "DialogRow": {
+      "type": "object",
+      "properties": {
+        "elements": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DialogElement"
+          }
+        },
+        "bottomPadding": {
+          "type": "number",
+          "format": "float"
+        },
+        "topPadding": {
+          "type": "number",
+          "format": "float"
+        }
+      }
+    },
+    "DialogElement": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string"
+        },
+        "width": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "height": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "paddingLeft": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "type": {
+          "$ref": "#/definitions/EnumDialogElementType"
+        },
+        "mode": {
+          "$ref": "#/definitions/EnumDialogElementMode"
+        },
+        "label": {
+          "type": "string"
+        },
+        "icon": {
+          "type": "string"
+        },
+        "text": {
+          "type": "string"
+        },
+        "tooltip": {
+          "type": "string"
+        },
+        "fontSize": {
+          "type": "number",
+          "format": "float"
+        },
+        "icons": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "values": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "names": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "tooltips": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "minValue": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "maxValue": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "step": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "param": {
+          "type": "string",
+          "description": "To hold generic data"
+        }
+      }
+    },
+    "EnumDialogElementType": {
+      "type": "string",
+      "description": "",
+      "x-enumNames": [
+        "Select",
+        "Input",
+        "Slider",
+        "Switch",
+        "NumberInput",
+        "Button",
+        "Text",
+        "DynamicSelect"
+      ],
+      "enum": [
+        "select",
+        "input",
+        "slider",
+        "switch",
+        "numberInput",
+        "button",
+        "text",
+        "dynamicSelect"
+      ]
+    },
+    "EnumDialogElementMode": {
+      "type": "string",
+      "description": "",
+      "x-enumNames": [
+        "DropDown",
+        "Buttons"
+      ],
+      "enum": [
+        "dropDown",
+        "buttons"
+      ]
+    },
+    "OnValueSetDelegate": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/MulticastDelegate"
+        },
+        {
+          "type": "object"
+        }
+      ]
+    },
+    "MulticastDelegate": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/Delegate"
+        },
+        {
+          "type": "object",
+          "x-abstract": true
+        }
+      ]
+    },
+    "Delegate": {
+      "type": "object",
+      "x-abstract": true,
+      "properties": {
+        "_target": {},
+        "_methodBase": {},
+        "_methodPtr": {
+          "$ref": "#/definitions/IntPtr"
+        },
+        "_methodPtrAux": {
+          "$ref": "#/definitions/IntPtr"
+        },
+        "Method": {
+          "$ref": "#/definitions/MethodInfo"
+        },
+        "Target": {}
+      }
+    },
+    "IntPtr": {
+      "type": "object"
+    },
+    "MethodInfo": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/MethodBase"
+        },
+        {
+          "type": "object",
+          "x-abstract": true,
+          "properties": {
+            "memberType": {
+              "$ref": "#/definitions/MemberTypes"
+            },
+            "returnType": {
+              "type": "string"
+            },
+            "returnParameter": {
+              "$ref": "#/definitions/ParameterInfo"
+            }
+          }
+        }
+      ]
+    },
+    "MemberTypes": {
+      "type": "string",
+      "description": "",
+      "x-enumFlags": true,
+      "x-enumNames": [
+        "Constructor",
+        "Event",
+        "Field",
+        "Method",
+        "Property",
+        "TypeInfo",
+        "Custom",
+        "NestedType",
+        "All"
+      ],
+      "enum": [
+        "constructor",
+        "event",
+        "field",
+        "method",
+        "property",
+        "typeInfo",
+        "custom",
+        "nestedType",
+        "all"
+      ]
+    },
+    "ParameterInfo": {
+      "type": "object",
+      "properties": {
+        "parameterType": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "hasDefaultValue": {
+          "type": "boolean"
+        },
+        "defaultValue": {},
+        "rawDefaultValue": {},
+        "position": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "attributes": {
+          "$ref": "#/definitions/ParameterAttributes"
+        },
+        "member": {
+          "$ref": "#/definitions/MemberInfo"
+        },
+        "isIn": {
+          "type": "boolean"
+        },
+        "isOut": {
+          "type": "boolean"
+        },
+        "isLcid": {
+          "type": "boolean"
+        },
+        "isRetval": {
+          "type": "boolean"
+        },
+        "isOptional": {
+          "type": "boolean"
+        },
+        "metadataToken": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "customAttributes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CustomAttributeData"
+          }
+        }
+      }
+    },
+    "ParameterAttributes": {
+      "type": "string",
+      "description": "",
+      "x-enumFlags": true,
+      "x-enumNames": [
+        "None",
+        "In",
+        "Out",
+        "Lcid",
+        "Retval",
+        "Optional",
+        "HasDefault",
+        "HasFieldMarshal",
+        "Reserved3",
+        "Reserved4",
+        "ReservedMask"
+      ],
+      "enum": [
+        "none",
+        "in",
+        "out",
+        "lcid",
+        "retval",
+        "optional",
+        "hasDefault",
+        "hasFieldMarshal",
+        "reserved3",
+        "reserved4",
+        "reservedMask"
+      ]
+    },
+    "MemberInfo": {
+      "type": "object",
+      "x-abstract": true,
+      "properties": {
+        "customAttributes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CustomAttributeData"
+          }
+        },
+        "metadataToken": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "module": {
+          "$ref": "#/definitions/Module"
+        }
+      }
+    },
+    "CustomAttributeData": {
+      "type": "object",
+      "properties": {
+        "attributeType": {
+          "type": "string"
+        },
+        "constructor": {
+          "$ref": "#/definitions/ConstructorInfo"
+        },
+        "constructorArguments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CustomAttributeTypedArgument"
+          }
+        },
+        "namedArguments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CustomAttributeNamedArgument"
+          }
+        }
+      }
+    },
+    "ConstructorInfo": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/MethodBase"
+        },
+        {
+          "type": "object",
+          "x-abstract": true,
+          "properties": {
+            "memberType": {
+              "$ref": "#/definitions/MemberTypes"
+            }
+          }
+        }
+      ]
+    },
+    "MethodBase": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/MemberInfo"
+        },
+        {
+          "type": "object",
+          "x-abstract": true,
+          "properties": {
+            "methodImplementationFlags": {
+              "$ref": "#/definitions/MethodImplAttributes"
+            },
+            "callingConvention": {
+              "$ref": "#/definitions/CallingConventions"
+            },
+            "isGenericMethodDefinition": {
+              "type": "boolean"
+            },
+            "containsGenericParameters": {
+              "type": "boolean"
+            },
+            "isGenericMethod": {
+              "type": "boolean"
+            },
+            "isSecurityCritical": {
+              "type": "boolean"
+            },
+            "isSecuritySafeCritical": {
+              "type": "boolean"
+            },
+            "isSecurityTransparent": {
+              "type": "boolean"
+            },
+            "isPublic": {
+              "type": "boolean"
+            },
+            "isPrivate": {
+              "type": "boolean"
+            },
+            "isFamily": {
+              "type": "boolean"
+            },
+            "isAssembly": {
+              "type": "boolean"
+            },
+            "isFamilyAndAssembly": {
+              "type": "boolean"
+            },
+            "isFamilyOrAssembly": {
+              "type": "boolean"
+            },
+            "isStatic": {
+              "type": "boolean"
+            },
+            "isFinal": {
+              "type": "boolean"
+            },
+            "isVirtual": {
+              "type": "boolean"
+            },
+            "isHideBySig": {
+              "type": "boolean"
+            },
+            "isAbstract": {
+              "type": "boolean"
+            },
+            "isSpecialName": {
+              "type": "boolean"
+            },
+            "isConstructor": {
+              "type": "boolean"
+            }
+          }
+        }
+      ]
+    },
+    "MethodImplAttributes": {
+      "type": "string",
+      "description": "",
+      "x-enumNames": [
+        "IL",
+        "Managed",
+        "Native",
+        "OPTIL",
+        "Runtime",
+        "CodeTypeMask",
+        "Unmanaged",
+        "ManagedMask",
+        "NoInlining",
+        "ForwardRef",
+        "Synchronized",
+        "NoOptimization",
+        "PreserveSig",
+        "AggressiveInlining",
+        "SecurityMitigations",
+        "InternalCall",
+        "MaxMethodImplVal"
+      ],
+      "enum": [
+        "managed",
+        "native",
+        "optil",
+        "codeTypeMask",
+        "unmanaged",
+        "noInlining",
+        "forwardRef",
+        "synchronized",
+        "noOptimization",
+        "preserveSig",
+        "aggressiveInlining",
+        "securityMitigations",
+        "internalCall",
+        "maxMethodImplVal"
+      ]
+    },
+    "CallingConventions": {
+      "type": "string",
+      "description": "",
+      "x-enumFlags": true,
+      "x-enumNames": [
+        "Standard",
+        "VarArgs",
+        "Any",
+        "HasThis",
+        "ExplicitThis"
+      ],
+      "enum": [
+        "standard",
+        "varArgs",
+        "any",
+        "hasThis",
+        "explicitThis"
+      ]
+    },
+    "CustomAttributeTypedArgument": {
+      "type": "object",
+      "properties": {
+        "argumentType": {
+          "type": "string"
+        },
+        "value": {}
+      }
+    },
+    "CustomAttributeNamedArgument": {
+      "type": "object",
+      "properties": {
+        "memberInfo": {
+          "$ref": "#/definitions/MemberInfo"
+        },
+        "typedValue": {
+          "$ref": "#/definitions/CustomAttributeTypedArgument"
+        },
+        "memberName": {
+          "type": "string"
+        },
+        "isField": {
+          "type": "boolean"
+        }
+      }
+    },
+    "Module": {
+      "type": "object",
+      "x-abstract": true,
+      "properties": {
+        "CustomAttributes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CustomAttributeData"
+          }
+        },
+        "MDStreamVersion": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "FullyQualifiedName": {
+          "type": "string"
+        },
+        "ModuleVersionId": {
+          "type": "string",
+          "format": "guid"
+        },
+        "MetadataToken": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "ScopeName": {
+          "type": "string"
+        },
+        "Name": {
+          "type": "string"
+        },
+        "Assembly": {
+          "$ref": "#/definitions/Assembly"
+        },
+        "ModuleHandle": {
+          "$ref": "#/definitions/ModuleHandle"
+        }
+      }
+    },
+    "Assembly": {
+      "type": "object",
+      "x-abstract": true,
+      "properties": {
+        "CodeBase": {
+          "type": "string"
+        },
+        "EscapedCodeBase": {
+          "type": "string"
+        },
+        "FullName": {
+          "type": "string"
+        },
+        "EntryPoint": {
+          "$ref": "#/definitions/MethodInfo"
+        },
+        "ExportedTypes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "DefinedTypes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "Evidence": {
+          "type": "array",
+          "items": {}
+        },
+        "PermissionSet": {
+          "type": "array",
+          "items": {}
+        },
+        "IsFullyTrusted": {
+          "type": "boolean"
+        },
+        "SecurityRuleSet": {
+          "$ref": "#/definitions/SecurityRuleSet"
+        },
+        "ManifestModule": {
+          "$ref": "#/definitions/Module"
+        },
+        "CustomAttributes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CustomAttributeData"
+          }
+        },
+        "ReflectionOnly": {
+          "type": "boolean"
+        },
+        "Modules": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Module"
+          }
+        },
+        "Location": {
+          "type": "string"
+        },
+        "ImageRuntimeVersion": {
+          "type": "string"
+        },
+        "GlobalAssemblyCache": {
+          "type": "boolean"
+        },
+        "HostContext": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "IsDynamic": {
+          "type": "boolean"
+        }
+      }
+    },
+    "SecurityRuleSet": {
+      "type": "string",
+      "description": "",
+      "x-enumNames": [
+        "None",
+        "Level1",
+        "Level2"
+      ],
+      "enum": [
+        "none",
+        "level1",
+        "level2"
+      ]
+    },
+    "ModuleHandle": {
+      "type": "object",
+      "properties": {
+        "mdStreamVersion": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "OnValueGetDelegate": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/MulticastDelegate"
+        },
+        {
+          "type": "object"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,99 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "ModInfo",
+  "type": "object",
+  "description": "Meta data for a specific mod folder, archive, source file or assembly.\nEither loaded from a \"modinfo.json\" or from the assembly's\nModInfoAttribute.",
+  "properties": {
+    "type": {
+      "description": "The type of this mod. Can be \"Theme\", \"Content\" or \"Code\". ",
+      "oneOf": [
+        {
+          "$ref": "#/definitions/EnumModType"
+        }
+      ]
+    },
+    "textureSize": {
+      "type": "integer",
+      "description": "If the mod is a texture pack that changes topsoil grass textures, define the texture size here",
+      "format": "int32"
+    },
+    "name": {
+      "type": "string",
+      "description": "The name of this mod. For example \"My Example Mod\". "
+    },
+    "version": {
+      "type": "string",
+      "description": "The version of this mod. For example \"2.10.4\". (optional) "
+    },
+    "networkVersion": {
+      "type": "string",
+      "description": "The network version of this mod. Change this number when a user that has an older version of your mod should not be allowed to connected to server with a newer version. If not set, the version value is used."
+    },
+    "description": {
+      "type": "string",
+      "description": "A short description of what this mod does. (optional) "
+    },
+    "website": {
+      "type": "string",
+      "description": "Location of the website or project site of this mod. (optional) "
+    },
+    "modid": {
+      "type": "string",
+      "description": "The mod id (domain) of this mod. For example \"myexamplemod\".\n(Optional. Uses mod name (converted to lowercase, stripped of\nwhitespace and special characters) if missing.)"
+    },
+    "authors": {
+      "type": "array",
+      "description": "Names of people working on this mod. (optional) ",
+      "items": {
+        "type": "string"
+      }
+    },
+    "contributors": {
+      "type": "array",
+      "description": "Names of people contributing to this mod. (optional) ",
+      "items": {
+        "type": "string"
+      }
+    },
+    "side": {
+      "description": "Which side(s) this mod runs on. Can be \"Server\", \"Client\" or \"Universal\".\n(Optional. Universal (both server and client) by default.)",
+      "oneOf": [
+        {
+          "$ref": "#/definitions/EnumAppSide"
+        }
+      ]
+    },
+    "requiredOnClient": {
+      "type": "boolean",
+      "description": "If set to false and the mod is universal, clients don't need the mod\nto join. (Optional. True by default.)"
+    },
+    "requiredOnServer": {
+      "type": "boolean",
+      "description": "If set to false and the mod is universal, the mod is not disabled\nif it's not present on the server. (Optional. True by default.)"
+    },
+    "dependencies": {
+      "type": "object",
+      "description": "List of mods (and versions) this mod depends on.\nThe game uses SemVer to compare using logic described here: https://semver.org/, so for example 1.15.0 > 1.15.0-rc.3 > 1.15.0-rc.2\nFor example, if you set your mod to have a dependency of \"game\": \"1.15.0-rc.2\", it will be compatible with that version and all versions released at a later date.\nYou can set the value to an empty string or an asterisk (\"game\": \"*\") to allow compatibility with all versions. ",
+      "additionalProperties": {
+        "type": "string"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "required": ["type", "name"],
+  "definitions": {
+    "EnumModType": {
+      "type": "string",
+      "description": "Describes the type of a mod. Allows easy recognition and limiting of\nwhat any particular mod can do.",
+      "x-enumNames": ["Theme", "Content", "Code"],
+      "enum": ["theme", "content", "code"]
+    },
+    "EnumAppSide": {
+      "type": "string",
+      "description": "",
+      "x-enumFlags": true,
+      "x-enumNames": ["Server", "Client", "Universal"],
+      "enum": ["server", "client", "universal"]
+    }
+  }
+}

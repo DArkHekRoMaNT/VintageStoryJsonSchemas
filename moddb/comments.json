@@ -1,0 +1,48 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "statuscode": {
+      "type": "string"
+    },
+    "comments": {
+      "type": "array",
+      "items": [
+        {
+          "type": "object",
+          "properties": {
+            "commentid": {
+              "type": "integer"
+            },
+            "assetid": {
+              "type": "integer"
+            },
+            "userid": {
+              "type": "integer"
+            },
+            "text": {
+              "type": "string"
+            },
+            "created": {
+              "type": "string"
+            },
+            "lastmodified": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "commentid",
+            "assetid",
+            "userid",
+            "text",
+            "created",
+            "lastmodified"
+          ]
+        }
+      ]
+    }
+  },
+  "required": [
+    "statuscode"
+  ]
+}

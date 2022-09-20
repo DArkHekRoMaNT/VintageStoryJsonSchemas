@@ -1,0 +1,167 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "statuscode": {
+      "type": "string"
+    },
+    "mod": {
+      "type": "object",
+      "properties": {
+        "modid": {
+          "type": "integer"
+        },
+        "assetid": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "text": {
+          "type": "string"
+        },
+        "author": {
+          "type": "string"
+        },
+        "logofilename": {
+          "type": ["string", "null"]
+        },
+        "homepageurl": {
+          "type": ["string", "null"]
+        },
+        "sourcecodeurl": {
+          "type": ["string", "null"]
+        },
+        "trailervideourl": {
+          "type": ["string", "null"]
+        },
+        "issuetrackerurl": {
+          "type": ["string", "null"]
+        },
+        "wikiurl": {
+          "type": ["string", "null"]
+        },
+        "downloads": {
+          "type": "integer"
+        },
+        "follows": {
+          "type": "integer"
+        },
+        "comments": {
+          "type": "integer"
+        },
+		"side": {
+		  "type": [
+			"string",
+			"null"
+		  ],
+		  "enum": [
+			"client",
+			"server",
+			"both",
+			"null"
+		  ]
+		},
+		"type": {
+		  "type": "string",
+		  "enum": [
+			"mod",
+			"externaltool",
+			"other"
+		  ]
+		},
+        "created": {
+          "type": "string"
+        },
+        "lastmodified": {
+          "type": "string"
+        },
+        "tags": {
+          "type": "array",
+          "items": [
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "releases": {
+          "type": "array",
+          "items": [
+            {
+              "type": "object",
+              "properties": {
+                "releaseid": {
+                  "type": "integer"
+                },
+                "mainfile": {
+                  "type": ["string", "null"]
+                },
+                "filename": {
+                  "type": ["string", "null"]
+                },
+                "fileid": {
+                  "type": ["integer", "null"]
+                },
+                "downloads": {
+                  "type": "integer"
+                },
+                "tags": {
+                  "type": "array",
+                  "items": [
+                    {
+                      "type": "string"
+                    }
+                  ]
+                },
+                "modidstr": {
+                  "type": ["string", "null"]
+                },
+                "modversion": {
+                  "type": ["string", "null"]
+                },
+                "created": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "releaseid",
+                "mainfile",
+                "filename",
+                "fileid",
+                "downloads",
+                "tags",
+                "modidstr",
+                "modversion",
+                "created"
+              ]
+            }
+          ]
+        }
+      },
+      "required": [
+        "modid",
+        "assetid",
+        "name",
+        "text",
+        "author",
+        "logofilename",
+        "homepageurl",
+        "sourcecodeurl",
+        "trailervideourl",
+        "issuetrackerurl",
+        "wikiurl",
+        "downloads",
+        "follows",
+        "comments",
+        "side",
+        "created",
+        "lastmodified",
+        "tags",
+        "releases"
+      ]
+    }
+  },
+  "required": [
+    "statuscode"
+  ]
+}

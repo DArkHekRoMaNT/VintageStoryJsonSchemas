@@ -1,0 +1,130 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "JsonPatch[]",
+  "type": "array",
+  "items": {
+    "$ref": "#/definitions/JsonPatch"
+  },
+  "definitions": {
+    "JsonPatch": {
+      "type": "object",
+      "properties": {
+        "op": {
+          "$ref": "#/definitions/EnumJsonPatchOp"
+        },
+        "file": {
+          "type": "string"
+        },
+        "fromPath": {
+          "type": "string"
+        },
+        "path": {
+          "type": "string"
+        },
+        "dependsOn": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PatchModDependence"
+          }
+        },
+        "side": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/definitions/EnumAppSide"
+            }
+          ]
+        },
+        "condition": {
+          "$ref": "#/definitions/PatchCondition"
+        },
+        "value": {
+          "$ref": "#/definitions/JsonObject"
+        },
+        "sideType": {
+          "x-deprecated": true,
+          "x-deprecatedMessage": "Use Side instead",
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/definitions/EnumAppSide"
+            }
+          ]
+        }
+      }
+    },
+    "EnumJsonPatchOp": {
+      "type": "string",
+      "description": "",
+      "x-enumNames": [
+        "Add",
+        "Remove",
+        "Replace",
+        "Copy",
+        "Move"
+      ],
+      "enum": [
+        "add",
+        "remove",
+        "replace",
+        "copy",
+        "move"
+      ]
+    },
+    "PatchModDependence": {
+      "type": "object",
+      "properties": {
+        "modid": {
+          "type": "string"
+        },
+        "invert": {
+          "type": "boolean"
+        }
+      }
+    },
+    "EnumAppSide": {
+      "type": "string",
+      "description": "",
+      "x-enumFlags": true,
+      "x-enumNames": [
+        "Server",
+        "Client",
+        "Universal"
+      ],
+      "enum": [
+        "server",
+        "client",
+        "universal"
+      ]
+    },
+    "PatchCondition": {
+      "type": "object",
+      "properties": {
+        "when": {
+          "type": "string"
+        },
+        "isValue": {
+          "type": "string"
+        },
+        "useValue": {
+          "type": "boolean"
+        }
+      }
+    },
+    "JsonObject": {
+      "type": "object",
+      "description": "Elegant, yet somewhat inefficently designed (because wasteful with heap objects) wrapper class to abstract away the type-casting nightmare of JToken O.O",
+      "properties": {
+        "exists": {
+          "type": "boolean",
+          "description": "True if the token is not null"
+        },
+        "token": {}
+      }
+    }
+  }
+}

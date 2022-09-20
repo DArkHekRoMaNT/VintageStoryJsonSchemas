@@ -1,0 +1,156 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "TraderWearableProperties",
+  "type": "object",
+  "properties": {
+    "shapes": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/TexturedWeightedCompositeShape"
+      }
+    },
+    "bySlot": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/SlotAlloc"
+      }
+    }
+  },
+  "definitions": {
+    "TexturedWeightedCompositeShape": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/CompositeShape"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "weight": {
+              "type": "number",
+              "format": "float"
+            },
+            "textures": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "CompositeShape": {
+      "type": "object",
+      "properties": {
+        "base": {
+          "type": "string"
+        },
+        "format": {
+          "$ref": "#/definitions/EnumShapeFormat"
+        },
+        "insertBakedTextures": {
+          "type": "boolean",
+          "description": "Whether or not to insert baked in textures for mesh formats such as gltf into the texture atlas."
+        },
+        "rotateX": {
+          "type": "number",
+          "format": "float"
+        },
+        "rotateY": {
+          "type": "number",
+          "format": "float"
+        },
+        "rotateZ": {
+          "type": "number",
+          "format": "float"
+        },
+        "offsetX": {
+          "type": "number",
+          "format": "float"
+        },
+        "offsetY": {
+          "type": "number",
+          "format": "float"
+        },
+        "offsetZ": {
+          "type": "number",
+          "format": "float"
+        },
+        "scale": {
+          "type": "number",
+          "format": "float"
+        },
+        "alternates": {
+          "type": "array",
+          "description": "The block shape may consists of any amount of alternatives, one of which will be randomly chosen when the block is placed in the world.",
+          "items": {
+            "$ref": "#/definitions/CompositeShape"
+          }
+        },
+        "bakedAlternates": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CompositeShape"
+          }
+        },
+        "overlays": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CompositeShape"
+          }
+        },
+        "voxelizeTexture": {
+          "type": "boolean",
+          "description": "If true, the shape is created from a voxelized version of the first defined texture"
+        },
+        "quantityElements": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "description": "If non zero will only tesselate the first n elements of the shape",
+          "format": "int32"
+        },
+        "selectiveElements": {
+          "type": "array",
+          "description": "If set will only tesselate elements with given name",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "EnumShapeFormat": {
+      "type": "string",
+      "description": "",
+      "x-enumNames": [
+        "VintageStory",
+        "Obj",
+        "GltfEmbedded"
+      ],
+      "enum": [
+        "vintageStory",
+        "obj",
+        "gltfEmbedded"
+      ]
+    },
+    "SlotAlloc": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string"
+        },
+        "shapes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "weightSum": {
+          "type": "number",
+          "format": "float"
+        }
+      }
+    }
+  }
+}

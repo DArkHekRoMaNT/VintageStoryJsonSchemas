@@ -1,0 +1,73 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "ConditionalPatternConfig[]",
+  "type": "array",
+  "items": {
+    "$ref": "#/definitions/ConditionalPatternConfig"
+  },
+  "definitions": {
+    "ConditionalPatternConfig": {
+      "type": "object",
+      "x-abstract": true,
+      "properties": {
+        "weightFunction": {
+          "$ref": "#/definitions/EnumChanceFunction"
+        },
+        "minRain": {
+          "type": [
+            "null",
+            "number"
+          ],
+          "format": "float"
+        },
+        "maxRain": {
+          "type": [
+            "null",
+            "number"
+          ],
+          "format": "float"
+        },
+        "rainRange": {
+          "type": "number",
+          "format": "float"
+        },
+        "minTemp": {
+          "type": [
+            "null",
+            "number"
+          ],
+          "format": "float"
+        },
+        "maxTemp": {
+          "type": [
+            "null",
+            "number"
+          ],
+          "format": "float"
+        },
+        "tempRange": {
+          "type": "number",
+          "format": "float"
+        },
+        "weight": {
+          "type": "number",
+          "format": "float"
+        }
+      }
+    },
+    "EnumChanceFunction": {
+      "type": "string",
+      "description": "",
+      "x-enumNames": [
+        "None",
+        "TestRainTemp",
+        "AvoidHotAndDry"
+      ],
+      "enum": [
+        "none",
+        "testRainTemp",
+        "avoidHotAndDry"
+      ]
+    }
+  }
+}

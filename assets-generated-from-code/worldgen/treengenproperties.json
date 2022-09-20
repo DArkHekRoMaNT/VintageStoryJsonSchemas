@@ -1,0 +1,223 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "TreeGenProperties",
+  "type": "object",
+  "properties": {
+    "treesPerChunk": {
+      "$ref": "#/definitions/NatFloat"
+    },
+    "shrubsPerChunk": {
+      "$ref": "#/definitions/NatFloat"
+    },
+    "vinesMinRain": {
+      "type": "number",
+      "format": "float"
+    },
+    "vinesMinTemp": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "descVineMinTempRel": {
+      "type": "number",
+      "format": "float"
+    },
+    "treeGens": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/TreeVariant"
+      }
+    },
+    "shrubGens": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/TreeVariant"
+      }
+    }
+  },
+  "definitions": {
+    "NatFloat": {
+      "type": "object",
+      "description": "A more natural random number generator (nature usually doesn't grow by the exact same numbers nor does it completely randomly)",
+      "properties": {
+        "offset": {
+          "type": "number",
+          "format": "float"
+        },
+        "avg": {
+          "type": "number",
+          "format": "float"
+        },
+        "var": {
+          "type": "number",
+          "format": "float"
+        },
+        "dist": {
+          "$ref": "#/definitions/EnumDistribution"
+        }
+      }
+    },
+    "EnumDistribution": {
+      "type": "string",
+      "description": "The distribution of the random numbers ",
+      "x-enumNames": [
+        "UNIFORM",
+        "TRIANGLE",
+        "GAUSSIAN",
+        "NARROWGAUSSIAN",
+        "INVERSEGAUSSIAN",
+        "NARROWINVERSEGAUSSIAN",
+        "INVEXP",
+        "STRONGINVEXP",
+        "STRONGERINVEXP",
+        "DIRAC",
+        "VERYNARROWGAUSSIAN"
+      ],
+      "enum": [
+        "uniform",
+        "triangle",
+        "gaussian",
+        "narrowgaussian",
+        "inversegaussian",
+        "narrowinversegaussian",
+        "invexp",
+        "stronginvexp",
+        "strongerinvexp",
+        "dirac",
+        "verynarrowgaussian"
+      ]
+    },
+    "TreeVariant": {
+      "type": "object",
+      "properties": {
+        "generator": {
+          "type": "string"
+        },
+        "weight": {
+          "type": "number",
+          "format": "float"
+        },
+        "habitat": {
+          "$ref": "#/definitions/EnumTreeHabitat"
+        },
+        "minSize": {
+          "type": "number",
+          "format": "float"
+        },
+        "maxSize": {
+          "type": "number",
+          "format": "float"
+        },
+        "suitabilitySizeBonus": {
+          "type": "number",
+          "format": "float"
+        },
+        "saplingDropRate": {
+          "type": "number",
+          "format": "float"
+        },
+        "growthSpeed": {
+          "type": "number",
+          "format": "float"
+        },
+        "jankaHardness": {
+          "type": "number",
+          "format": "float"
+        },
+        "minTemp": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "maxTemp": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "minRain": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "maxRain": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "minFert": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "maxFert": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "minForest": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "maxForest": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "minHeight": {
+          "type": "number",
+          "format": "float"
+        },
+        "maxHeight": {
+          "type": "number",
+          "format": "float"
+        },
+        "tempMid": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "tempRange": {
+          "type": "number",
+          "format": "float"
+        },
+        "rainMid": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "rainRange": {
+          "type": "number",
+          "format": "float"
+        },
+        "fertMid": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "fertRange": {
+          "type": "number",
+          "format": "float"
+        },
+        "forestMid": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "forestRange": {
+          "type": "number",
+          "format": "float"
+        },
+        "heightMid": {
+          "type": "number",
+          "format": "float"
+        },
+        "heightRange": {
+          "type": "number",
+          "format": "float"
+        }
+      }
+    },
+    "EnumTreeHabitat": {
+      "type": "string",
+      "description": "",
+      "x-enumNames": [
+        "Land",
+        "LandWater",
+        "Water"
+      ],
+      "enum": [
+        "land",
+        "landWater",
+        "water"
+      ]
+    }
+  }
+}

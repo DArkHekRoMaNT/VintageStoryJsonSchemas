@@ -1,0 +1,17 @@
+{
+	"$id": "",
+  "$schema": "https://json.schemastore.org/schema-catalog.json",
+  
+  
+  "version": 1.0,
+  "schemas": [
+    {
+      "name": "modinfo.json",
+      "description": "Vintage Story meta data for a specific mod folder, archive, source file or assembly",
+      "fileMatch": [
+        "**/modinfo.json"
+      ],
+      "url": "https://github.com/DArkHekRoMaNT/VintageStoryJsonSchemas/blob/master/modinfo.json"
+    }
+  ]
+}

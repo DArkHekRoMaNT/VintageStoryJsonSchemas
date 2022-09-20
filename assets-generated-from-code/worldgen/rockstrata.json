@@ -1,0 +1,113 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "RockStrataConfig",
+  "definitions": {
+    "EnumRockGroup": {
+      "type": "string",
+      "description": "",
+      "x-enumNames": [
+        "Sedimentary",
+        "Metamorphic",
+        "Igneous",
+        "Volcanic"
+      ],
+      "enum": [
+        "sedimentary",
+        "metamorphic",
+        "igneous",
+        "volcanic"
+      ]
+    },
+    "WorldPropertyOfRockStratum": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string"
+        },
+        "variants": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RockStratum"
+          }
+        }
+      }
+    },
+    "RockStratum": {
+      "type": "object",
+      "properties": {
+        "blockCode": {
+          "type": "string"
+        },
+        "generator": {
+          "type": "string"
+        },
+        "amplitudes": {
+          "type": "array",
+          "items": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "frequencies": {
+          "type": "array",
+          "items": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "thresholds": {
+          "type": "array",
+          "items": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "genDir": {
+          "$ref": "#/definitions/EnumStratumGenDir"
+        },
+        "isDeposit": {
+          "type": "boolean"
+        },
+        "rockGroup": {
+          "$ref": "#/definitions/EnumRockGroup"
+        },
+        "blockId": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "EnumStratumGenDir": {
+      "type": "string",
+      "description": "",
+      "x-enumNames": [
+        "BottomUp",
+        "TopDown"
+      ],
+      "enum": [
+        "bottomUp",
+        "topDown"
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "$ref": "#/definitions/WorldPropertyOfRockStratum"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "maxThicknessPerGroup": {
+          "type": "object",
+          "x-dictionaryKey": {
+            "$ref": "#/definitions/EnumRockGroup"
+          },
+          "additionalProperties": {
+            "type": "number",
+            "format": "float"
+          }
+        }
+      }
+    }
+  ]
+}

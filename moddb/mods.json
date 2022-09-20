@@ -1,0 +1,104 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "statuscode": {
+      "type": "string"
+    },
+    "mods": {
+      "type": "array",
+      "items": [
+        {
+          "type": "object",
+          "properties": {
+            "modid": {
+              "type": "integer"
+            },
+            "assetid": {
+              "type": "integer"
+            },
+            "downloads": {
+              "type": "integer"
+            },
+            "follows": {
+              "type": "integer"
+            },
+            "comments": {
+              "type": "integer"
+            },
+            "name": {
+              "type": "string"
+            },
+            "modidstrs": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "string"
+                }
+              ]
+            },
+            "author": {
+              "type": "string"
+            },
+            "urlalias": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "side": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "enum": [
+                "client",
+                "server",
+                "both",
+                "null"
+              ]
+            },
+            "type": {
+              "type": "string",
+              "enum": [
+                "mod",
+                "externaltool",
+                "other"
+              ]
+            },
+            "logo": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "tags": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "modid",
+            "assetid",
+            "downloads",
+            "follows",
+            "comments",
+            "name",
+            "modidstrs",
+            "author",
+            "urlalias",
+            "side",
+            "type",
+            "logo",
+            "tags"
+          ]
+        }
+      ]
+    }
+  },
+  "required": [
+    "statuscode"
+  ]
+}

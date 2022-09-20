@@ -1,0 +1,48 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "statuscode": {
+      "type": "string"
+    },
+    "changelogs": {
+      "type": "array",
+      "items": [
+        {
+          "type": "object",
+          "properties": {
+            "changelogid": {
+              "type": "integer"
+            },
+            "assetid": {
+              "type": "integer"
+            },
+            "userid": {
+              "type": "integer"
+            },
+            "text": {
+              "type": "string"
+            },
+            "created": {
+              "type": "string"
+            },
+            "lastmodified": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "changelogid",
+            "assetid",
+            "userid",
+            "text",
+            "created",
+            "lastmodified"
+          ]
+        }
+      ]
+    }
+  },
+  "required": [
+    "statuscode"
+  ]
+}

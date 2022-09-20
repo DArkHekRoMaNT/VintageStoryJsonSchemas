@@ -1,0 +1,104 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "WindPatternConfig[]",
+  "type": "array",
+  "items": {
+    "$ref": "#/definitions/WindPatternConfig"
+  },
+  "definitions": {
+    "WindPatternConfig": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "weight": {
+          "type": "number",
+          "format": "float"
+        },
+        "durationHours": {
+          "$ref": "#/definitions/NatFloat"
+        },
+        "strength": {
+          "$ref": "#/definitions/NatFloat"
+        },
+        "strengthNoise": {
+          "$ref": "#/definitions/NoiseConfig"
+        }
+      }
+    },
+    "NatFloat": {
+      "type": "object",
+      "description": "A more natural random number generator (nature usually doesn't grow by the exact same numbers nor does it completely randomly)",
+      "properties": {
+        "offset": {
+          "type": "number",
+          "format": "float"
+        },
+        "avg": {
+          "type": "number",
+          "format": "float"
+        },
+        "var": {
+          "type": "number",
+          "format": "float"
+        },
+        "dist": {
+          "$ref": "#/definitions/EnumDistribution"
+        }
+      }
+    },
+    "EnumDistribution": {
+      "type": "string",
+      "description": "The distribution of the random numbers ",
+      "x-enumNames": [
+        "UNIFORM",
+        "TRIANGLE",
+        "GAUSSIAN",
+        "NARROWGAUSSIAN",
+        "INVERSEGAUSSIAN",
+        "NARROWINVERSEGAUSSIAN",
+        "INVEXP",
+        "STRONGINVEXP",
+        "STRONGERINVEXP",
+        "DIRAC",
+        "VERYNARROWGAUSSIAN"
+      ],
+      "enum": [
+        "uniform",
+        "triangle",
+        "gaussian",
+        "narrowgaussian",
+        "inversegaussian",
+        "narrowinversegaussian",
+        "invexp",
+        "stronginvexp",
+        "strongerinvexp",
+        "dirac",
+        "verynarrowgaussian"
+      ]
+    },
+    "NoiseConfig": {
+      "type": "object",
+      "properties": {
+        "amplitudes": {
+          "type": "array",
+          "items": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "frequencies": {
+          "type": "array",
+          "items": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      }
+    }
+  }
+}

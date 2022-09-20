@@ -1,0 +1,4510 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "EntityType",
+  "definitions": {
+    "EnumHabitat": {
+      "type": "string",
+      "description": "",
+      "x-enumNames": [
+        "Sea",
+        "Land",
+        "Air",
+        "Underwater"
+      ],
+      "enum": [
+        "sea",
+        "land",
+        "air",
+        "underwater"
+      ]
+    },
+    "Vec2f": {
+      "type": "object",
+      "description": "Represents a vector of 2 floats. Go bug Tyron of you need more utility methods in this class.",
+      "properties": {
+        "x": {
+          "type": "number",
+          "format": "float"
+        },
+        "y": {
+          "type": "number",
+          "format": "float"
+        }
+      }
+    },
+    "JsonObject": {
+      "type": "object",
+      "description": "Elegant, yet somewhat inefficently designed (because wasteful with heap objects) wrapper class to abstract away the type-casting nightmare of JToken O.O",
+      "properties": {
+        "exists": {
+          "type": "boolean",
+          "description": "True if the token is not null"
+        },
+        "token": {}
+      }
+    },
+    "ClientEntityConfig": {
+      "type": "object",
+      "properties": {
+        "renderer": {
+          "type": "string"
+        },
+        "glowLevel": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "shape": {
+          "$ref": "#/definitions/CompositeShape"
+        },
+        "behaviors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/JsonObject"
+          }
+        },
+        "size": {
+          "type": "number",
+          "format": "float"
+        },
+        "sizeGrowthFactor": {
+          "type": "number",
+          "format": "float"
+        },
+        "animations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/AnimationMetaData"
+          }
+        },
+        "animationsByMetaCode": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/AnimationMetaData"
+          }
+        },
+        "textures": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/CompositeTexture"
+          }
+        },
+        "firstTexture": {
+          "$ref": "#/definitions/CompositeTexture"
+        }
+      }
+    },
+    "CompositeShape": {
+      "type": "object",
+      "properties": {
+        "base": {
+          "type": "string"
+        },
+        "format": {
+          "$ref": "#/definitions/EnumShapeFormat"
+        },
+        "insertBakedTextures": {
+          "type": "boolean",
+          "description": "Whether or not to insert baked in textures for mesh formats such as gltf into the texture atlas."
+        },
+        "rotateX": {
+          "type": "number",
+          "format": "float"
+        },
+        "rotateY": {
+          "type": "number",
+          "format": "float"
+        },
+        "rotateZ": {
+          "type": "number",
+          "format": "float"
+        },
+        "offsetX": {
+          "type": "number",
+          "format": "float"
+        },
+        "offsetY": {
+          "type": "number",
+          "format": "float"
+        },
+        "offsetZ": {
+          "type": "number",
+          "format": "float"
+        },
+        "scale": {
+          "type": "number",
+          "format": "float"
+        },
+        "alternates": {
+          "type": "array",
+          "description": "The block shape may consists of any amount of alternatives, one of which will be randomly chosen when the block is placed in the world.",
+          "items": {
+            "$ref": "#/definitions/CompositeShape"
+          }
+        },
+        "bakedAlternates": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CompositeShape"
+          }
+        },
+        "overlays": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CompositeShape"
+          }
+        },
+        "voxelizeTexture": {
+          "type": "boolean",
+          "description": "If true, the shape is created from a voxelized version of the first defined texture"
+        },
+        "quantityElements": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "description": "If non zero will only tesselate the first n elements of the shape",
+          "format": "int32"
+        },
+        "selectiveElements": {
+          "type": "array",
+          "description": "If set will only tesselate elements with given name",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "EnumShapeFormat": {
+      "type": "string",
+      "description": "",
+      "x-enumNames": [
+        "VintageStory",
+        "Obj",
+        "GltfEmbedded"
+      ],
+      "enum": [
+        "vintageStory",
+        "obj",
+        "gltfEmbedded"
+      ]
+    },
+    "AnimationMetaData": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "Unique identifier to be able to reference this AnimationMetaData instance"
+        },
+        "animation": {
+          "type": "string",
+          "description": "The animations code identifier that we want to play"
+        },
+        "weight": {
+          "type": "number",
+          "format": "float"
+        },
+        "elementWeight": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "number",
+            "format": "float"
+          }
+        },
+        "animationSpeed": {
+          "type": "number",
+          "format": "float"
+        },
+        "mulWithWalkSpeed": {
+          "type": "boolean"
+        },
+        "easeInSpeed": {
+          "type": "number",
+          "description": "A multiplier applied to the weight value to \"ease in\" the animation. Choose a high value for looping animations or it will be glitchy",
+          "format": "float"
+        },
+        "easeOutSpeed": {
+          "type": "number",
+          "description": "A multiplier applied to the weight value to \"ease out\" the animation. Choose a high value for looping animations or it will be glitchy",
+          "format": "float"
+        },
+        "triggeredBy": {
+          "$ref": "#/definitions/AnimationTrigger"
+        },
+        "blendMode": {
+          "$ref": "#/definitions/EnumAnimationBlendMode"
+        },
+        "elementBlendMode": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/EnumAnimationBlendMode"
+          }
+        },
+        "supressDefaultAnimation": {
+          "type": "boolean"
+        },
+        "holdEyePosAfterEasein": {
+          "type": "number",
+          "format": "float"
+        },
+        "startFrameOnce": {
+          "type": "number",
+          "format": "float"
+        },
+        "codeCrc32": {
+          "type": "integer"
+        },
+        "wasStartedFromTrigger": {
+          "type": "boolean"
+        }
+      }
+    },
+    "AnimationTrigger": {
+      "type": "object",
+      "properties": {
+        "onControls": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/EnumEntityActivity"
+          }
+        },
+        "matchExact": {
+          "type": "boolean"
+        },
+        "defaultAnim": {
+          "type": "boolean"
+        }
+      }
+    },
+    "EnumEntityActivity": {
+      "type": "string",
+      "description": "",
+      "x-enumFlags": true,
+      "x-enumNames": [
+        "None",
+        "Idle",
+        "Move",
+        "SprintMode",
+        "SneakMode",
+        "Fly",
+        "Swim",
+        "Jump",
+        "Fall",
+        "Climb",
+        "FloorSitting",
+        "Dead",
+        "Break",
+        "Place"
+      ],
+      "enum": [
+        "none",
+        "idle",
+        "move",
+        "sprintMode",
+        "sneakMode",
+        "fly",
+        "swim",
+        "jump",
+        "fall",
+        "climb",
+        "floorSitting",
+        "dead",
+        "break",
+        "place"
+      ]
+    },
+    "EnumAnimationBlendMode": {
+      "type": "string",
+      "description": "",
+      "x-enumNames": [
+        "Add",
+        "Average",
+        "AddAverage"
+      ],
+      "enum": [
+        "add",
+        "average",
+        "addAverage"
+      ]
+    },
+    "CompositeTexture": {
+      "type": "object",
+      "description": "A single block texture",
+      "properties": {
+        "base": {
+          "type": "string",
+          "description": "The basic texture for this composite texture"
+        },
+        "overlays": {
+          "type": "array",
+          "description": "The base texture may be overlayed with any quantity of textures. These are baked together during texture atlas creation",
+          "items": {
+            "type": "string"
+          }
+        },
+        "alternates": {
+          "type": "array",
+          "description": "The texture may consists of any amount of alternatives, one of which will be randomly chosen when the block is placed in the world.",
+          "items": {
+            "$ref": "#/definitions/CompositeTexture"
+          }
+        },
+        "baked": {
+          "description": "BakedCompositeTexture is an expanded, atlas friendly version of CompositeTexture. Required during texture atlas generation.",
+          "oneOf": [
+            {
+              "$ref": "#/definitions/BakedCompositeTexture"
+            }
+          ]
+        },
+        "rotation": {
+          "type": "integer",
+          "description": "Rotation of the texture may only be a multiple of 90",
+          "format": "int32"
+        },
+        "alpha": {
+          "type": "integer",
+          "description": "Can be used to modify the opacity of the texture",
+          "format": "int32"
+        }
+      }
+    },
+    "BakedCompositeTexture": {
+      "type": "object",
+      "description": "An expanded, atlas-friendly version of a CompositeTexture",
+      "properties": {
+        "textureSubId": {
+          "type": "integer",
+          "description": "Unique identifier for this texture",
+          "format": "int32"
+        },
+        "bakedName": {
+          "type": "string",
+          "description": "The Base name and Overlay concatenated (if there was any defined)"
+        },
+        "textureFilenames": {
+          "type": "array",
+          "description": "The base name and overlays as array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "bakedVariants": {
+          "type": "array",
+          "description": "If non-null also contains BakedName",
+          "items": {
+            "$ref": "#/definitions/BakedCompositeTexture"
+          }
+        }
+      }
+    },
+    "ServerEntityConfig": {
+      "type": "object",
+      "properties": {
+        "behaviors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/JsonObject"
+          }
+        },
+        "attributes": {
+          "$ref": "#/definitions/JsonObject"
+        },
+        "spawnConditions": {
+          "$ref": "#/definitions/SpawnConditions"
+        }
+      }
+    },
+    "SpawnConditions": {
+      "type": "object",
+      "description": "The spawn conditions assigned to various things.",
+      "properties": {
+        "runtime": {
+          "description": "Runtime requirements for the object to spawn.",
+          "oneOf": [
+            {
+              "$ref": "#/definitions/RuntimeSpawnConditions"
+            }
+          ]
+        },
+        "worldgen": {
+          "description": "Worldgen/region requirements for the object to spawn.",
+          "oneOf": [
+            {
+              "$ref": "#/definitions/WorldGenSpawnConditions"
+            }
+          ]
+        }
+      }
+    },
+    "RuntimeSpawnConditions": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/BaseSpawnConditions"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "chance": {
+              "type": "number",
+              "description": "The chance for the object to spawn.",
+              "format": "double"
+            },
+            "maxQuantity": {
+              "type": "integer",
+              "description": "The max quantity of objects to spawn.",
+              "format": "int32"
+            },
+            "minDistanceToPlayer": {
+              "type": "integer",
+              "description": "The minimum distance from the player that an object will spawn.",
+              "format": "int32"
+            }
+          }
+        }
+      ]
+    },
+    "BaseSpawnConditions": {
+      "type": "object",
+      "properties": {
+        "group": {
+          "type": "string",
+          "description": "The group of the spawn conditions."
+        },
+        "minLightLevel": {
+          "type": "integer",
+          "description": "The minimum light level for an object to spawn.",
+          "format": "int32"
+        },
+        "maxLightLevel": {
+          "type": "integer",
+          "description": "The maximum light level for an object to spawn.",
+          "format": "int32"
+        },
+        "lightLevelType": {
+          "description": "The type of light counted for spawning purposes.",
+          "oneOf": [
+            {
+              "$ref": "#/definitions/EnumLightLevelType"
+            }
+          ]
+        },
+        "herdSize": {
+          "description": "the group size for the spawn.",
+          "oneOf": [
+            {
+              "$ref": "#/definitions/NatFloat"
+            }
+          ]
+        },
+        "companions": {
+          "type": "array",
+          "description": "Additional companions for the spawn.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "insideBlockCodes": {
+          "type": "array",
+          "description": "The blocks that the object will spawn in.  (default: air)",
+          "items": {
+            "type": "string"
+          }
+        },
+        "requireSolidGround": {
+          "type": "boolean",
+          "description": "Checks to see if the object requires solid ground."
+        },
+        "tryOnlySurface": {
+          "type": "boolean",
+          "description": "checks to see if the object can only spawn in the surface."
+        },
+        "climateValueMode": {
+          "description": "Whether the rain and temperature values are referring to the worldgen values (i.e. yearly averages) or the current values at the moment of spawning",
+          "oneOf": [
+            {
+              "$ref": "#/definitions/EnumGetClimateMode"
+            }
+          ]
+        },
+        "minTemp": {
+          "type": "number",
+          "description": "The minimum tempurature for the object to spawn.",
+          "format": "float"
+        },
+        "maxTemp": {
+          "type": "number",
+          "description": "The maximum tempurature for the object to spawn.",
+          "format": "float"
+        },
+        "minRain": {
+          "type": "number",
+          "description": "The minimum amount of rain for the object to spawn.",
+          "format": "float"
+        },
+        "maxRain": {
+          "type": "number",
+          "description": "The maximum amount of rain for the object to spawn.",
+          "format": "float"
+        },
+        "minForest": {
+          "type": "number",
+          "description": "The minimum amount of forest cover needed for the object to spawn.",
+          "format": "float"
+        },
+        "maxForest": {
+          "type": "number",
+          "description": "The maximum amount of forest cover needed for the object to spawn.",
+          "format": "float"
+        },
+        "minShrubs": {
+          "type": "number",
+          "description": "The minimum amount of shrubbery needed for the object to spawn.",
+          "format": "float"
+        },
+        "maxShrubs": {
+          "type": "number",
+          "description": "The maximum amount of shrubbery needed for the object to spawn.",
+          "format": "float"
+        },
+        "minY": {
+          "type": "number",
+          "description": "Won't span below minY. 0...1 is world bottom to sea level, 1...2 is sea level to world top",
+          "format": "float"
+        },
+        "maxY": {
+          "type": "number",
+          "description": "Won't span above maxY. 0...1 is world bottom to sea level, 1...2 is sea level to world top",
+          "format": "float"
+        },
+        "minForestOrShrubs": {
+          "type": "number",
+          "description": "The minimum amount of forest or shrubs for the object to spawn.",
+          "format": "float"
+        },
+        "groupSize": {
+          "x-deprecated": true,
+          "x-deprecatedMessage": "Use HerdSize instead",
+          "oneOf": [
+            {
+              "$ref": "#/definitions/NatFloat"
+            }
+          ]
+        }
+      }
+    },
+    "EnumLightLevelType": {
+      "type": "string",
+      "description": "Used in blockAccessor.GetLightLevel() to determine what kind of light level you want",
+      "x-enumNames": [
+        "OnlyBlockLight",
+        "OnlySunLight",
+        "MaxLight",
+        "MaxTimeOfDayLight",
+        "TimeOfDaySunLight"
+      ],
+      "enum": [
+        "onlyBlockLight",
+        "onlySunLight",
+        "maxLight",
+        "maxTimeOfDayLight",
+        "timeOfDaySunLight"
+      ]
+    },
+    "NatFloat": {
+      "type": "object",
+      "description": "A more natural random number generator (nature usually doesn't grow by the exact same numbers nor does it completely randomly)",
+      "properties": {
+        "offset": {
+          "type": "number",
+          "format": "float"
+        },
+        "avg": {
+          "type": "number",
+          "format": "float"
+        },
+        "var": {
+          "type": "number",
+          "format": "float"
+        },
+        "dist": {
+          "$ref": "#/definitions/EnumDistribution"
+        }
+      }
+    },
+    "EnumDistribution": {
+      "type": "string",
+      "description": "The distribution of the random numbers ",
+      "x-enumNames": [
+        "UNIFORM",
+        "TRIANGLE",
+        "GAUSSIAN",
+        "NARROWGAUSSIAN",
+        "INVERSEGAUSSIAN",
+        "NARROWINVERSEGAUSSIAN",
+        "INVEXP",
+        "STRONGINVEXP",
+        "STRONGERINVEXP",
+        "DIRAC",
+        "VERYNARROWGAUSSIAN"
+      ],
+      "enum": [
+        "uniform",
+        "triangle",
+        "gaussian",
+        "narrowgaussian",
+        "inversegaussian",
+        "narrowinversegaussian",
+        "invexp",
+        "stronginvexp",
+        "strongerinvexp",
+        "dirac",
+        "verynarrowgaussian"
+      ]
+    },
+    "EnumGetClimateMode": {
+      "type": "string",
+      "description": "The type of climate values you wish to receive",
+      "x-enumNames": [
+        "WorldGenValues",
+        "NowValues",
+        "ForSuppliedDateValues"
+      ],
+      "enum": [
+        "worldGenValues",
+        "nowValues",
+        "forSuppliedDateValues"
+      ]
+    },
+    "WorldGenSpawnConditions": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/BaseSpawnConditions"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "triesPerChunk": {
+              "description": "The amount of time the object will attempt to spawn per chunk.",
+              "oneOf": [
+                {
+                  "$ref": "#/definitions/NatFloat"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "BlockDropItemStack": {
+      "type": "object",
+      "description": "Represents an itemstack that is dropped by chance when breaking a block",
+      "properties": {
+        "type": {
+          "description": "Block or Item?",
+          "oneOf": [
+            {
+              "$ref": "#/definitions/EnumItemClass"
+            }
+          ]
+        },
+        "code": {
+          "type": "string",
+          "description": "Code of the block or item"
+        },
+        "quantity": {
+          "description": "Quantity to be dropped",
+          "oneOf": [
+            {
+              "$ref": "#/definitions/NatFloat"
+            }
+          ]
+        },
+        "attributes": {
+          "description": "Tree Attributes that should be attached to the resulting itemstack",
+          "oneOf": [
+            {
+              "$ref": "#/definitions/JsonObject"
+            }
+          ]
+        },
+        "lastDrop": {
+          "type": "boolean",
+          "description": "If true and the quantity dropped is &gt;=1 any subsequent drop will be ignored"
+        },
+        "tool": {
+          "description": "If not null then given tool is required to break this block",
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/definitions/EnumTool"
+            }
+          ]
+        },
+        "resolvedItemstack": {
+          "description": "The resulting ItemStack for this block being broken by a tool.",
+          "oneOf": [
+            {
+              "$ref": "#/definitions/ItemStack"
+            }
+          ]
+        },
+        "dropModbyStat": {
+          "type": "string",
+          "description": "If set, the drop quantity will be modified by the collecting entity stat code - entity.Stats.GetBlended(code)"
+        }
+      }
+    },
+    "EnumItemClass": {
+      "type": "string",
+      "description": "",
+      "x-enumNames": [
+        "Block",
+        "Item"
+      ],
+      "enum": [
+        "block",
+        "item"
+      ]
+    },
+    "EnumTool": {
+      "type": "string",
+      "description": "",
+      "x-enumNames": [
+        "Knife",
+        "Pickaxe",
+        "Axe",
+        "Sword",
+        "Shovel",
+        "Hammer",
+        "Spear",
+        "Bow",
+        "Shears",
+        "Sickle",
+        "Hoe",
+        "Saw",
+        "Chisel",
+        "Scythe"
+      ],
+      "enum": [
+        "knife",
+        "pickaxe",
+        "axe",
+        "sword",
+        "shovel",
+        "hammer",
+        "spear",
+        "bow",
+        "shears",
+        "sickle",
+        "hoe",
+        "saw",
+        "chisel",
+        "scythe"
+      ]
+    },
+    "ItemStack": {
+      "type": "object",
+      "properties": {
+        "class": {
+          "description": "Wether its a block Block or Item",
+          "oneOf": [
+            {
+              "$ref": "#/definitions/EnumItemClass"
+            }
+          ]
+        },
+        "id": {
+          "type": "integer",
+          "description": "The id of the block or item",
+          "format": "int32"
+        },
+        "collectible": {
+          "description": "The item/block base class this stack is holding",
+          "oneOf": [
+            {
+              "$ref": "#/definitions/CollectibleObject"
+            }
+          ]
+        },
+        "item": {
+          "description": "If this is a stack of items, this is the type of items it's holding, otherwise null",
+          "oneOf": [
+            {
+              "$ref": "#/definitions/Item"
+            }
+          ]
+        },
+        "block": {
+          "description": "If this is a stack of blocks, this is the type of block it's holding, otherwise null",
+          "oneOf": [
+            {
+              "$ref": "#/definitions/Block"
+            }
+          ]
+        },
+        "stackSize": {
+          "type": "integer",
+          "description": "The amount of items/blocks in this stack",
+          "format": "int32"
+        },
+        "attributes": {
+          "type": "array",
+          "description": "Attributes assigned to this particular itemstack which are saved and synchronized. ",
+          "items": {}
+        },
+        "tempAttributes": {
+          "type": "array",
+          "description": "Temporary Attributes assigned to this particular itemstack, not synchronized, not saved! Modifiable.",
+          "items": {}
+        },
+        "itemAttributes": {
+          "description": "The Attributes assigned to the underlying block/item. Should not be modified, as it applies to globally.",
+          "oneOf": [
+            {
+              "$ref": "#/definitions/JsonObject"
+            }
+          ]
+        }
+      }
+    },
+    "CollectibleObject": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/RegistryObject"
+        },
+        {
+          "type": "object",
+          "description": "Contains all properties shared by Blocks and Items",
+          "x-abstract": true,
+          "properties": {
+            "matterState": {
+              "description": "Liquids are handled and rendered differently than solid blocks.",
+              "oneOf": [
+                {
+                  "$ref": "#/definitions/EnumMatterState"
+                }
+              ]
+            },
+            "maxStackSize": {
+              "type": "integer",
+              "description": "Max amount of collectible that one default inventory slot can hold",
+              "format": "int32"
+            },
+            "durability": {
+              "type": "integer",
+              "description": "How many uses does this collectible has when being used. Item disappears at durability 0",
+              "format": "int32"
+            },
+            "dimensions": {
+              "description": "Physical size of this collectible, 0.5 x 0.5 x 0.5 meters by default",
+              "oneOf": [
+                {
+                  "$ref": "#/definitions/Size3f"
+                }
+              ]
+            },
+            "liquidSelectable": {
+              "type": "boolean",
+              "description": "When true, liquids become selectable to the player when being held in hands"
+            },
+            "attackPower": {
+              "type": "number",
+              "description": "How much damage this collectible deals when used as a weapon",
+              "format": "float"
+            },
+            "attackRange": {
+              "type": "number",
+              "description": "Until how for away can you attack entities using this collectibe",
+              "format": "float"
+            },
+            "damagedBy": {
+              "type": "array",
+              "description": "From which damage sources does the item takes durability damage",
+              "items": {
+                "$ref": "#/definitions/EnumItemDamageSource"
+              }
+            },
+            "miningSpeed": {
+              "type": "object",
+              "description": "Modifies how fast the player can break a block when holding this item",
+              "x-dictionaryKey": {
+                "$ref": "#/definitions/EnumBlockMaterial"
+              },
+              "additionalProperties": {
+                "type": "number",
+                "format": "float"
+              }
+            },
+            "toolTier": {
+              "type": "integer",
+              "description": "What tier this block can mine when held in hands",
+              "format": "int32"
+            },
+            "heldSounds": {
+              "$ref": "#/definitions/HeldSounds"
+            },
+            "creativeInventoryTabs": {
+              "type": "array",
+              "description": "List of creative tabs in which this collectible should appear in",
+              "items": {
+                "type": "string"
+              }
+            },
+            "creativeInventoryStacks": {
+              "type": "array",
+              "description": "If you want to add itemstacks with custom attributes to the creative inventory, add them to this list",
+              "items": {
+                "$ref": "#/definitions/CreativeTabAndStackList"
+              }
+            },
+            "renderAlphaTest": {
+              "type": "number",
+              "description": "Alpha test value for rendering in gui, fp hand, tp hand or on the ground",
+              "format": "float"
+            },
+            "guiTransform": {
+              "description": "Used for scaling, rotation or offseting the block when rendered in guis",
+              "oneOf": [
+                {
+                  "$ref": "#/definitions/ModelTransform"
+                }
+              ]
+            },
+            "fpHandTransform": {
+              "description": "Used for scaling, rotation or offseting the block when rendered in the first person mode hand",
+              "oneOf": [
+                {
+                  "$ref": "#/definitions/ModelTransform"
+                }
+              ]
+            },
+            "tpHandTransform": {
+              "description": "Used for scaling, rotation or offseting the block when rendered in the third person mode hand",
+              "oneOf": [
+                {
+                  "$ref": "#/definitions/ModelTransform"
+                }
+              ]
+            },
+            "groundTransform": {
+              "description": "Used for scaling, rotation or offseting the rendered as a dropped item on the ground",
+              "oneOf": [
+                {
+                  "$ref": "#/definitions/ModelTransform"
+                }
+              ]
+            },
+            "attributes": {
+              "description": "Custom Attributes that's always assiociated with this item",
+              "oneOf": [
+                {
+                  "$ref": "#/definitions/JsonObject"
+                }
+              ]
+            },
+            "combustibleProps": {
+              "description": "Information about the burnable states",
+              "oneOf": [
+                {
+                  "$ref": "#/definitions/CombustibleProperties"
+                }
+              ]
+            },
+            "nutritionProps": {
+              "description": "Information about the nutrition states",
+              "oneOf": [
+                {
+                  "$ref": "#/definitions/FoodNutritionProperties"
+                }
+              ]
+            },
+            "transitionableProps": {
+              "type": "array",
+              "description": "Information about the transitionable states",
+              "items": {
+                "$ref": "#/definitions/TransitionableProperties"
+              }
+            },
+            "grindingProps": {
+              "description": "If set, the collectible can be ground into something else",
+              "oneOf": [
+                {
+                  "$ref": "#/definitions/GrindingProperties"
+                }
+              ]
+            },
+            "crushingProps": {
+              "description": "If set, the collectible can be crushed into something else",
+              "oneOf": [
+                {
+                  "$ref": "#/definitions/CrushingProperties"
+                }
+              ]
+            },
+            "particleProperties": {
+              "type": "array",
+              "description": "Particles that should spawn in regular intervals from this block or item when held in hands",
+              "items": {
+                "$ref": "#/definitions/AdvancedParticleProperties"
+              }
+            },
+            "topMiddlePos": {
+              "description": "The origin point from which particles are being spawned",
+              "oneOf": [
+                {
+                  "$ref": "#/definitions/Vec3f"
+                }
+              ]
+            },
+            "tool": {
+              "description": "If set, this item will be classified as given tool",
+              "oneOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "$ref": "#/definitions/EnumTool"
+                }
+              ]
+            },
+            "storageFlags": {
+              "description": "Determines in which kind of bags the item can be stored in",
+              "oneOf": [
+                {
+                  "$ref": "#/definitions/EnumItemStorageFlags"
+                }
+              ]
+            },
+            "materialDensity": {
+              "type": "integer",
+              "description": "Determines on whether an object floats on liquids or not. Water has a density of 1000",
+              "format": "int32"
+            },
+            "heldTpHitAnimation": {
+              "type": "string",
+              "description": "The animation to play in 3rd person mod when hitting with this collectible"
+            },
+            "heldRightTpIdleAnimation": {
+              "type": "string",
+              "description": "The animation to play in 3rd person mod when holding this collectible in the right hand"
+            },
+            "heldLeftTpIdleAnimation": {
+              "type": "string",
+              "description": "The animation to play in 3rd person mod when holding this collectible in the left hand"
+            },
+            "heldTpUseAnimation": {
+              "type": "string",
+              "description": "The animation to play in 3rd person mod when using this collectible"
+            },
+            "collectibleBehaviors": {
+              "type": "array",
+              "description": "Modifiers that can alter the behavior of the item or block, mostly for held interaction",
+              "items": {
+                "$ref": "#/definitions/CollectibleBehavior"
+              }
+            },
+            "isMissing": {
+              "type": "boolean",
+              "description": "This value is set the the BlockId or ItemId-Remapper if it encounters a block/item in the savegame, \nbut no longer exists as a loaded block/item"
+            },
+            "miningTier": {
+              "type": "integer",
+              "format": "int32",
+              "x-deprecated": true,
+              "x-deprecatedMessage": "Use tool tier"
+            }
+          }
+        }
+      ]
+    },
+    "EnumMatterState": {
+      "type": "string",
+      "description": "",
+      "x-enumNames": [
+        "Gas",
+        "Liquid",
+        "Solid",
+        "Plasma",
+        "BoseEinsteinCondensate"
+      ],
+      "enum": [
+        "gas",
+        "liquid",
+        "solid",
+        "plasma",
+        "boseEinsteinCondensate"
+      ]
+    },
+    "Size3f": {
+      "type": "object",
+      "description": "Represents a vector of 2 doubles. Go bug Tyron of you need more utility methods in this class.",
+      "properties": {
+        "width": {
+          "type": "number",
+          "format": "float"
+        },
+        "height": {
+          "type": "number",
+          "format": "float"
+        },
+        "length": {
+          "type": "number",
+          "format": "float"
+        }
+      }
+    },
+    "EnumItemDamageSource": {
+      "type": "string",
+      "description": "",
+      "x-enumNames": [
+        "BlockBreaking",
+        "Attacking",
+        "Fire"
+      ],
+      "enum": [
+        "blockBreaking",
+        "attacking",
+        "fire"
+      ]
+    },
+    "EnumBlockMaterial": {
+      "type": "string",
+      "description": "Material of which a block my be made of\nCurrently only used for mining speed for tools",
+      "x-enumNames": [
+        "Air",
+        "Soil",
+        "Gravel",
+        "Sand",
+        "Wood",
+        "Leaves",
+        "Stone",
+        "Ore",
+        "Liquid",
+        "Snow",
+        "Ice",
+        "Metal",
+        "Mantle",
+        "Plant",
+        "Glass",
+        "Ceramic",
+        "Cloth",
+        "Lava",
+        "Brick",
+        "Fire",
+        "Meta",
+        "Other"
+      ],
+      "enum": [
+        "air",
+        "soil",
+        "gravel",
+        "sand",
+        "wood",
+        "leaves",
+        "stone",
+        "ore",
+        "liquid",
+        "snow",
+        "ice",
+        "metal",
+        "mantle",
+        "plant",
+        "glass",
+        "ceramic",
+        "cloth",
+        "lava",
+        "brick",
+        "fire",
+        "meta",
+        "other"
+      ]
+    },
+    "HeldSounds": {
+      "type": "object",
+      "properties": {
+        "idle": {
+          "type": "string"
+        },
+        "equip": {
+          "type": "string"
+        },
+        "unequip": {
+          "type": "string"
+        },
+        "attack": {
+          "type": "string"
+        }
+      }
+    },
+    "CreativeTabAndStackList": {
+      "type": "object",
+      "properties": {
+        "tabs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "stacks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/JsonItemStack"
+          }
+        }
+      }
+    },
+    "JsonItemStack": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "description": "Block or Item?",
+          "oneOf": [
+            {
+              "$ref": "#/definitions/EnumItemClass"
+            }
+          ]
+        },
+        "code": {
+          "type": "string",
+          "description": "Code of the block or item"
+        },
+        "stackSize": {
+          "type": "integer",
+          "description": "Amount of items in this stacks",
+          "format": "int32"
+        },
+        "attributes": {
+          "description": "Tree Attributes that should be attached to the resulting itemstack",
+          "oneOf": [
+            {
+              "$ref": "#/definitions/JsonObject"
+            }
+          ]
+        },
+        "resolvedItemstack": {
+          "description": "The resolved item after conversion.",
+          "oneOf": [
+            {
+              "$ref": "#/definitions/ItemStack"
+            }
+          ]
+        },
+        "quantity": {
+          "type": "integer",
+          "description": "Alias of StackSize",
+          "format": "int32"
+        }
+      }
+    },
+    "ModelTransform": {
+      "type": "object",
+      "description": "Used for transformations applied to a block or item model",
+      "properties": {
+        "translation": {
+          "description": "Offsetting",
+          "oneOf": [
+            {
+              "$ref": "#/definitions/Vec3f"
+            }
+          ]
+        },
+        "rotation": {
+          "description": "Rotation in degrees",
+          "oneOf": [
+            {
+              "$ref": "#/definitions/Vec3f"
+            }
+          ]
+        },
+        "origin": {
+          "description": "Rotation/Scaling Origin",
+          "oneOf": [
+            {
+              "$ref": "#/definitions/Vec3f"
+            }
+          ]
+        },
+        "rotate": {
+          "type": "boolean",
+          "description": "For Gui Transform: Whether to slowly spin in gui item preview \nFor Ground Transform: Whether to apply a random rotation to the dropped item\nNo effect on other transforms"
+        },
+        "scaleXYZ": {
+          "description": "Scaling per axis",
+          "oneOf": [
+            {
+              "$ref": "#/definitions/Vec3f"
+            }
+          ]
+        },
+        "scale": {
+          "type": "number",
+          "description": "To set uniform Scaling on all Axes",
+          "format": "float"
+        },
+        "asMatrix": {
+          "type": "array",
+          "description": "Converts the transform into a matrix.",
+          "items": {
+            "type": "number",
+            "format": "float"
+          }
+        }
+      }
+    },
+    "Vec3f": {
+      "type": "object",
+      "description": "Represents a vector of 3 floats. Go bug Tyron of you need more utility methods in this class.",
+      "properties": {
+        "x": {
+          "type": "number",
+          "description": "The X-Component of the vector",
+          "format": "float"
+        },
+        "y": {
+          "type": "number",
+          "description": "The Y-Component of the vector",
+          "format": "float"
+        },
+        "z": {
+          "type": "number",
+          "description": "The Z-Component of the vector",
+          "format": "float"
+        },
+        "r": {
+          "type": "number",
+          "description": "Synonum for X",
+          "format": "float"
+        },
+        "g": {
+          "type": "number",
+          "description": "Synonum for Y",
+          "format": "float"
+        },
+        "b": {
+          "type": "number",
+          "description": "Synonum for Z",
+          "format": "float"
+        }
+      }
+    },
+    "CombustibleProperties": {
+      "type": "object",
+      "description": "Used for an items combustible value",
+      "properties": {
+        "burnTemperature": {
+          "type": "integer",
+          "description": "The temperature at which it burns",
+          "format": "int32"
+        },
+        "burnDuration": {
+          "type": "number",
+          "description": "For how long it burns in real life seconds",
+          "format": "float"
+        },
+        "heatResistance": {
+          "type": "integer",
+          "description": "How many degrees celsius it can resists before it ignites",
+          "format": "int32"
+        },
+        "meltingPoint": {
+          "type": "integer",
+          "description": "How many degrees celsius it takes to smelt/transform this into another. Only used when put in a stove and Melted is set ",
+          "format": "int32"
+        },
+        "maxTemperature": {
+          "type": "integer",
+          "description": "If there is a melting point, the max temperature it can reach. Set to 0 for no limit ",
+          "format": "int32"
+        },
+        "meltingDuration": {
+          "type": "number",
+          "description": "For how many seconds the temperature has to be above the melting point until the item is smelted",
+          "format": "float"
+        },
+        "smokeLevel": {
+          "type": "number",
+          "description": "How much smoke this item produces when being used as fuel",
+          "format": "float"
+        },
+        "smeltedRatio": {
+          "type": "integer",
+          "description": "How many ores are required to produce one output stack",
+          "format": "int32"
+        },
+        "smeltingType": {
+          "description": "Used for correct naming in the tool tip",
+          "oneOf": [
+            {
+              "$ref": "#/definitions/EnumSmeltType"
+            }
+          ]
+        },
+        "smeltedStack": {
+          "description": "If set, the block/item is smeltable in a furnace and this is the resulting itemstack once the MeltingPoint has been reached for the supplied duration.",
+          "oneOf": [
+            {
+              "$ref": "#/definitions/JsonItemStack"
+            }
+          ]
+        },
+        "requiresContainer": {
+          "type": "boolean",
+          "description": "If true (default) a container is required to smelt this item. "
+        }
+      }
+    },
+    "EnumSmeltType": {
+      "type": "string",
+      "description": "",
+      "x-enumNames": [
+        "Smelt",
+        "Cook",
+        "Bake",
+        "Convert",
+        "Fire"
+      ],
+      "enum": [
+        "smelt",
+        "cook",
+        "bake",
+        "convert",
+        "fire"
+      ]
+    },
+    "FoodNutritionProperties": {
+      "type": "object",
+      "properties": {
+        "foodCategory": {
+          "description": "The category of the food.",
+          "oneOf": [
+            {
+              "$ref": "#/definitions/EnumFoodCategory"
+            }
+          ]
+        },
+        "satiety": {
+          "type": "number",
+          "description": "The saturation restored by the food.",
+          "format": "float"
+        },
+        "saturationLossDelay": {
+          "type": "number",
+          "description": "The delay before that extra saturation starts to go away.",
+          "format": "float"
+        },
+        "health": {
+          "type": "number",
+          "description": "The health restored by the food.",
+          "format": "float"
+        },
+        "eatenStack": {
+          "description": "The item that was eaten.",
+          "oneOf": [
+            {
+              "$ref": "#/definitions/JsonItemStack"
+            }
+          ]
+        },
+        "saturation": {
+          "type": "number",
+          "format": "float",
+          "x-deprecated": true,
+          "x-deprecatedMessage": "Use Satiety instead."
+        }
+      }
+    },
+    "EnumFoodCategory": {
+      "type": "string",
+      "description": "",
+      "x-enumNames": [
+        "Fruit",
+        "Vegetable",
+        "Protein",
+        "Grain",
+        "Dairy",
+        "Unknown"
+      ],
+      "enum": [
+        "fruit",
+        "vegetable",
+        "protein",
+        "grain",
+        "dairy",
+        "unknown"
+      ]
+    },
+    "TransitionableProperties": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "description": "What kind of transition can it make?",
+          "oneOf": [
+            {
+              "$ref": "#/definitions/EnumTransitionType"
+            }
+          ]
+        },
+        "freshHours": {
+          "description": "The amount of hours this item stays fresh / untransitioned",
+          "oneOf": [
+            {
+              "$ref": "#/definitions/NatFloat"
+            }
+          ]
+        },
+        "transitionHours": {
+          "description": "The amount of hours it takes for the item to transition",
+          "oneOf": [
+            {
+              "$ref": "#/definitions/NatFloat"
+            }
+          ]
+        },
+        "transitionedStack": {
+          "description": "The itemstack the item/block turns into upon transitioning",
+          "oneOf": [
+            {
+              "$ref": "#/definitions/JsonItemStack"
+            }
+          ]
+        },
+        "transitionRatio": {
+          "type": "number",
+          "description": "Conversion ratio of fresh stacksize to transitioned stack size",
+          "format": "float"
+        }
+      }
+    },
+    "EnumTransitionType": {
+      "type": "string",
+      "description": "",
+      "x-enumNames": [
+        "Perish",
+        "Dry",
+        "Burn",
+        "Cure",
+        "Convert",
+        "Ripen"
+      ],
+      "enum": [
+        "perish",
+        "dry",
+        "burn",
+        "cure",
+        "convert",
+        "ripen"
+      ]
+    },
+    "GrindingProperties": {
+      "type": "object",
+      "properties": {
+        "groundStack": {
+          "description": "If set, the block/item is grindable in a quern and this is the resulting itemstack once the grinding time is over.",
+          "oneOf": [
+            {
+              "$ref": "#/definitions/JsonItemStack"
+            }
+          ]
+        },
+        "grindedStack": {
+          "x-deprecated": true,
+          "x-deprecatedMessage": "Use GroundStack instead",
+          "oneOf": [
+            {
+              "$ref": "#/definitions/JsonItemStack"
+            }
+          ]
+        }
+      }
+    },
+    "CrushingProperties": {
+      "type": "object",
+      "properties": {
+        "crushedStack": {
+          "description": "If set, the block/item is crusable in a pulverizer and this is the resulting itemstack once the crushing time is over.",
+          "oneOf": [
+            {
+              "$ref": "#/definitions/JsonItemStack"
+            }
+          ]
+        },
+        "hardnessTier": {
+          "type": "integer",
+          "description": "0 = stone, 1 = copper, 2 = bronze, 3 = iron, 4 = steel",
+          "format": "int32"
+        }
+      }
+    },
+    "AdvancedParticleProperties": {
+      "type": "object",
+      "properties": {
+        "hsvaColor": {
+          "type": "array",
+          "description": "The Hue/Saturation/Value/Alpha for the color of the particle.",
+          "items": {
+            "$ref": "#/definitions/NatFloat"
+          }
+        },
+        "posOffset": {
+          "type": "array",
+          "description": "Offset from the blocks hitboxes top middle position",
+          "items": {
+            "$ref": "#/definitions/NatFloat"
+          }
+        },
+        "basePos": {
+          "description": "The base position for the particles.",
+          "oneOf": [
+            {
+              "$ref": "#/definitions/Vec3d"
+            }
+          ]
+        },
+        "baseVelocity": {
+          "$ref": "#/definitions/Vec3f"
+        },
+        "block": {
+          "description": "The base block for the particle.",
+          "oneOf": [
+            {
+              "$ref": "#/definitions/Block"
+            }
+          ]
+        },
+        "color": {
+          "type": "integer",
+          "description": "When HsvaColor is null, this is used",
+          "format": "int32"
+        },
+        "randomVelocityChange": {
+          "type": "boolean"
+        },
+        "dieOnRainHeightmap": {
+          "type": "boolean"
+        },
+        "secondaryParticles": {
+          "type": "array",
+          "description": "The Secondary particles for the JsonObject.",
+          "items": {
+            "$ref": "#/definitions/AdvancedParticleProperties"
+          }
+        },
+        "deathParticles": {
+          "type": "array",
+          "description": "The death particles for the JsonObject.",
+          "items": {
+            "$ref": "#/definitions/AdvancedParticleProperties"
+          }
+        },
+        "secondarySpawnInterval": {
+          "description": "The inverval that the secondary particles spawn.",
+          "oneOf": [
+            {
+              "$ref": "#/definitions/NatFloat"
+            }
+          ]
+        },
+        "bouncy": {
+          "type": "boolean"
+        },
+        "dieInAir": {
+          "type": "boolean",
+          "description": "Whether or not the entity dies in air."
+        },
+        "dieInLiquid": {
+          "type": "boolean",
+          "description": "Whether or not the entity dies in water."
+        },
+        "swimOnLiquid": {
+          "type": "boolean"
+        },
+        "colorByBlock": {
+          "type": "boolean",
+          "description": "Whether or not to color the particle by the block it's on."
+        },
+        "opacityEvolve": {
+          "description": "a transforming opacity value.",
+          "oneOf": [
+            {
+              "$ref": "#/definitions/EvolvingNatFloat"
+            }
+          ]
+        },
+        "redEvolve": {
+          "description": "A transforming Red value.",
+          "oneOf": [
+            {
+              "$ref": "#/definitions/EvolvingNatFloat"
+            }
+          ]
+        },
+        "greenEvolve": {
+          "description": "A transforming Green value.",
+          "oneOf": [
+            {
+              "$ref": "#/definitions/EvolvingNatFloat"
+            }
+          ]
+        },
+        "blueEvolve": {
+          "description": "A transforming Blue value.",
+          "oneOf": [
+            {
+              "$ref": "#/definitions/EvolvingNatFloat"
+            }
+          ]
+        },
+        "gravityEffect": {
+          "description": "The gravity effect on the particle.",
+          "oneOf": [
+            {
+              "$ref": "#/definitions/NatFloat"
+            }
+          ]
+        },
+        "lifeLength": {
+          "description": "The life length of the particle.",
+          "oneOf": [
+            {
+              "$ref": "#/definitions/NatFloat"
+            }
+          ]
+        },
+        "quantity": {
+          "description": "The quantity of the particles given.",
+          "oneOf": [
+            {
+              "$ref": "#/definitions/NatFloat"
+            }
+          ]
+        },
+        "size": {
+          "description": "The size of the particles given.",
+          "oneOf": [
+            {
+              "$ref": "#/definitions/NatFloat"
+            }
+          ]
+        },
+        "sizeEvolve": {
+          "description": "a transforming Size value.",
+          "oneOf": [
+            {
+              "$ref": "#/definitions/EvolvingNatFloat"
+            }
+          ]
+        },
+        "velocity": {
+          "type": "array",
+          "description": "The velocity of the particles.",
+          "items": {
+            "$ref": "#/definitions/NatFloat"
+          }
+        },
+        "velocityEvolve": {
+          "type": "array",
+          "description": "A dynamic velocity value.",
+          "items": {
+            "$ref": "#/definitions/EvolvingNatFloat"
+          }
+        },
+        "particleModel": {
+          "description": "Sets the base model for the particle.",
+          "oneOf": [
+            {
+              "$ref": "#/definitions/EnumParticleModel"
+            }
+          ]
+        },
+        "vertexFlags": {
+          "type": "integer",
+          "description": "The level of glow in the particle.",
+          "format": "int32"
+        },
+        "selfPropelled": {
+          "type": "boolean",
+          "description": "Whether or not the particle is self propelled."
+        },
+        "terrainCollision": {
+          "type": "boolean",
+          "description": "Whether or not the particle collides with the terrain."
+        },
+        "windAffectednes": {
+          "type": "number",
+          "format": "float"
+        },
+        "pos": {
+          "$ref": "#/definitions/Vec3d"
+        },
+        "parentVelocity": {
+          "$ref": "#/definitions/Vec3f"
+        },
+        "windAffectednesAtPos": {
+          "type": "number",
+          "format": "float"
+        },
+        "parentVelocityWeight": {
+          "type": "number",
+          "format": "float"
+        }
+      }
+    },
+    "Vec3d": {
+      "type": "object",
+      "description": "Represents a vector of 3 doubles. Go bug Tyron of you need more utility methods in this class.",
+      "properties": {
+        "x": {
+          "type": "number",
+          "format": "double"
+        },
+        "y": {
+          "type": "number",
+          "format": "double"
+        },
+        "z": {
+          "type": "number",
+          "format": "double"
+        },
+        "asBlockPos": {
+          "$ref": "#/definitions/BlockPos"
+        },
+        "xInt": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "yInt": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "zInt": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "BlockPos": {
+      "type": "object",
+      "description": "A useful data structure when operating with block postions.\nValuable Hint: Make use of Copy() or the XXXCopy() variants where needed. A common pitfall is writing code like: BlockPos abovePos = pos.Up(); - with this code abovePos and pos will reference to the same object!",
+      "properties": {
+        "x": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "y": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "z": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "Block": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/CollectibleObject"
+        },
+        {
+          "type": "object",
+          "description": "Basic class for a placeable block",
+          "properties": {
+            "blockId": {
+              "type": "integer",
+              "description": "Unique number of the block. Same as Id. This number depends on the order in which the blocks are order. The numbering is however always ensured to remain the same on a per world basis.",
+              "format": "int32"
+            },
+            "drawType": {
+              "description": "If not set to JSON it will use an efficient hardcoded model",
+              "oneOf": [
+                {
+                  "$ref": "#/definitions/EnumDrawType"
+                }
+              ]
+            },
+            "renderPass": {
+              "description": "During which render pass this block should be rendered",
+              "oneOf": [
+                {
+                  "$ref": "#/definitions/EnumChunkRenderPass"
+                }
+              ]
+            },
+            "ambientocclusion": {
+              "type": "boolean",
+              "description": "Currently not used"
+            },
+            "walkSpeedMultiplier": {
+              "type": "number",
+              "description": "Walk speed when standing or inside this block",
+              "format": "float"
+            },
+            "dragMultiplier": {
+              "type": "number",
+              "description": "Drag multiplier applied to entities standing on it",
+              "format": "float"
+            },
+            "partialSelection": {
+              "type": "boolean",
+              "description": "If true, players can target individual selection boxes of the block"
+            },
+            "sounds": {
+              "description": "The sounds played for this block during step, break, build and walk. Use GetSounds() to query if not performance critical.",
+              "oneOf": [
+                {
+                  "$ref": "#/definitions/BlockSounds"
+                }
+              ]
+            },
+            "vertexFlags": {
+              "description": "Data thats passed on to the graphics card for every vertex of the blocks model",
+              "oneOf": [
+                {
+                  "$ref": "#/definitions/VertexFlags"
+                }
+              ]
+            },
+            "frostable": {
+              "type": "boolean",
+              "description": "A bit uploaded to the shader to add a frost overlay below freezing temperature"
+            },
+            "lightHsv": {
+              "type": "string",
+              "description": "For light emitting blocks: hue, saturation and brightness value",
+              "format": "byte"
+            },
+            "lightAbsorption": {
+              "type": "integer",
+              "description": "For light blocking blocks. Any value above 32 will completely block all light.",
+              "format": "int32"
+            },
+            "lightTraversable": {
+              "type": "array",
+              "description": "0: West-East\n1: Up-Down\n2: North-South",
+              "items": {
+                "type": "boolean"
+              }
+            },
+            "replaceable": {
+              "type": "integer",
+              "description": "A value usually between 0-9999 that indicates which blocks may be replaced with others.\n- Any block with replaceable value above 5000 will be washed away by water\n- Any block with replaceable value above 6000 will replaced when the player tries to place a block\nExamples:\n0 = Bedrock\n6000 = Tallgrass\n9000 = Lava\n9500 = Water\n9999 = Air",
+              "format": "int32"
+            },
+            "fertility": {
+              "type": "integer",
+              "description": "0 = nothing can grow, 10 = some tallgrass and small trees can be grow on it, 100 = all grass and trees can grow on it",
+              "format": "int32"
+            },
+            "requiredMiningTier": {
+              "type": "integer",
+              "description": "The mining tier required to break this block",
+              "format": "int32"
+            },
+            "resistance": {
+              "type": "number",
+              "description": "How long it takes to break this block in seconds. Use GetResistance() to query if not performance critical.",
+              "format": "float"
+            },
+            "blockMaterial": {
+              "description": "A way to categorize blocks. Used for getting the mining speed for each tool type, amongst other things. Use GetBlockMaterial() to query if not performance critical.",
+              "oneOf": [
+                {
+                  "$ref": "#/definitions/EnumBlockMaterial"
+                }
+              ]
+            },
+            "randomizeAxes": {
+              "description": "Random texture selection - whether or not to use the Y axis during randomization (for multiblock plants)",
+              "oneOf": [
+                {
+                  "$ref": "#/definitions/EnumRandomizeAxes"
+                }
+              ]
+            },
+            "randomDrawOffset": {
+              "type": "integer",
+              "description": "If true then the block will be randomly offseted by 1/3 of a block when placed",
+              "format": "int32"
+            },
+            "randomizeRotations": {
+              "type": "boolean"
+            },
+            "randomSizeAdjust": {
+              "type": "number",
+              "format": "float"
+            },
+            "alternatingVOffset": {
+              "type": "boolean",
+              "description": "If true, the block will render with a UV offset enabling it to use the \"other half\" of a 64 x 64 texture on each alternate block position  (e.g. Redwood trunk)"
+            },
+            "alternatingVOffsetFaces": {
+              "type": "integer",
+              "description": "Bit flags for the direction in which the alternatingVOffset is to be applied e.g. 0x30 to apply alternatingVOffset as the y position moves up and down",
+              "format": "int32"
+            },
+            "shapeInventory": {
+              "description": "The block shape to be used when displayed in the inventory gui, held in hand or dropped on the ground",
+              "oneOf": [
+                {
+                  "$ref": "#/definitions/CompositeShape"
+                }
+              ]
+            },
+            "shape": {
+              "description": "The default json block shape to be used when drawtype==JSON",
+              "oneOf": [
+                {
+                  "$ref": "#/definitions/CompositeShape"
+                }
+              ]
+            },
+            "lod0Shape": {
+              "$ref": "#/definitions/CompositeShape"
+            },
+            "lod2Shape": {
+              "$ref": "#/definitions/CompositeShape"
+            },
+            "lod0Mesh": {
+              "$ref": "#/definitions/MeshData"
+            },
+            "lod2Mesh": {
+              "$ref": "#/definitions/MeshData"
+            },
+            "doNotRenderAtLod2": {
+              "type": "boolean"
+            },
+            "textures": {
+              "type": "object",
+              "description": "Default textures to be used for this block\n(may be null, on servers prior to reading blockType, on clients prior to receipt of server assets)",
+              "additionalProperties": {
+                "$ref": "#/definitions/CompositeTexture"
+              }
+            },
+            "fastTextureVariants": {
+              "type": "array",
+              "description": "Fast array of texture variants, for use by cube (or similar) tesselators if the block has alternate shapes\nThe outer array is indexed based on the 6 BlockFacing.Index numerals; the inner array is the variants",
+              "items": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/BakedCompositeTexture"
+                }
+              }
+            },
+            "texturesInventory": {
+              "type": "object",
+              "description": "Textures to be used for this block in the inventory gui, held in hand or dropped on the ground\n(may be null, on servers prior to reading blockType, on clients prior to receipt of server assets)",
+              "additionalProperties": {
+                "$ref": "#/definitions/CompositeTexture"
+              }
+            },
+            "sideOpaque": {
+              "type": "array",
+              "description": "Defines which of the 6 block sides are completely opaque. Used to determine which block faces can be culled during tesselation.",
+              "items": {
+                "type": "boolean"
+              }
+            },
+            "sideSolid": {
+              "type": "array",
+              "description": "Defines which of the 6 block side are solid. Used to determine if attachable blocks can be attached to this block. Also used to determine if snow can rest on top of this block.",
+              "items": {
+                "type": "boolean"
+              }
+            },
+            "sideAo": {
+              "type": "array",
+              "description": "Defines which of the 6 block side should be shaded with ambient occlusion",
+              "items": {
+                "type": "boolean"
+              }
+            },
+            "emitSideAo": {
+              "type": "integer",
+              "description": "Defines which of the 6 block neighbours should receive AO if this block is in front of them",
+              "format": "byte"
+            },
+            "allowSpawnCreatureGroups": {
+              "type": "array",
+              "description": "Defines what creature groups may spawn on this block",
+              "items": {
+                "type": "string"
+              }
+            },
+            "faceCullMode": {
+              "description": "Determines which sides of the blocks should be rendered",
+              "oneOf": [
+                {
+                  "$ref": "#/definitions/EnumFaceCullMode"
+                }
+              ]
+            },
+            "climateColorMap": {
+              "type": "string",
+              "description": "The color map for climate color mapping. Leave null for no coloring by climate"
+            },
+            "climateColorMapResolved": {
+              "$ref": "#/definitions/ColorMap"
+            },
+            "seasonColorMap": {
+              "type": "string",
+              "description": "The color map for season color mapping. Leave null for no coloring by season"
+            },
+            "seasonColorMapResolved": {
+              "$ref": "#/definitions/ColorMap"
+            },
+            "shapeUsesColormap": {
+              "type": "boolean",
+              "description": "Internal value that's set during if the block shape has any tint indexes for use in chunk tesselation and stuff O_O"
+            },
+            "loadColorMapAnyway": {
+              "type": "boolean"
+            },
+            "collisionBoxes": {
+              "type": "array",
+              "description": "Defines the area with which the player character collides with.",
+              "items": {
+                "$ref": "#/definitions/Cuboidf"
+              }
+            },
+            "selectionBoxes": {
+              "type": "array",
+              "description": "Defines the area which the players mouse pointer collides with for selection.",
+              "items": {
+                "$ref": "#/definitions/Cuboidf"
+              }
+            },
+            "particleCollisionBoxes": {
+              "type": "array",
+              "description": "Defines the area with which particles collide with (if null, will be the same as CollisionBoxes).",
+              "items": {
+                "$ref": "#/definitions/Cuboidf"
+              }
+            },
+            "climbable": {
+              "type": "boolean",
+              "description": "Used for ladders. If true, walking against this blocks collisionbox will make the player climb"
+            },
+            "rainPermeable": {
+              "type": "boolean",
+              "description": "Will be used for not rendering rain below this block"
+            },
+            "liquidLevel": {
+              "type": "integer",
+              "description": "Value between 0..7 for Liquids to determine the height of the liquid",
+              "format": "int32"
+            },
+            "liquidCode": {
+              "type": "string",
+              "description": "If this block is or contains a liquid, this should be the code (or \"identifier\") of the liquid"
+            },
+            "hasAlternates": {
+              "type": "boolean",
+              "description": "A flag set during texture block shape tesselation"
+            },
+            "blockBehaviors": {
+              "type": "array",
+              "description": "Modifiers that can alter the behavior of a block, particularly when being placed or removed",
+              "items": {
+                "$ref": "#/definitions/BlockBehavior"
+              }
+            },
+            "blockEntityBehaviors": {
+              "type": "array",
+              "description": "Modifiers that can alter the behavior of a block entity",
+              "items": {
+                "$ref": "#/definitions/BlockEntityBehaviorType"
+              }
+            },
+            "drops": {
+              "type": "array",
+              "description": "The items that should drop from breaking this block",
+              "items": {
+                "$ref": "#/definitions/BlockDropItemStack"
+              }
+            },
+            "splitDropStacks": {
+              "type": "boolean",
+              "description": "If true, a blocks drops will be split into stacks of stacksize 1 for more game juice. This field is only used in OnBlockBroken() and OnBlockExploded()"
+            },
+            "cropProps": {
+              "description": "Information about the blocks as a crop ",
+              "oneOf": [
+                {
+                  "$ref": "#/definitions/BlockCropProperties"
+                }
+              ]
+            },
+            "entityClass": {
+              "type": "string",
+              "description": "If this block has a block entity attached to it, this will store it's code "
+            },
+            "canStep": {
+              "type": "boolean"
+            },
+            "allowStepWhenStuck": {
+              "type": "boolean"
+            },
+            "decorBehaviorFlags": {
+              "type": "integer",
+              "description": "To allow Decor Behavior settings to be accessed through the Block API.  See DecorFlags class for interpretation.",
+              "format": "byte"
+            },
+            "decorThickness": {
+              "type": "number",
+              "description": "Used to adjust selection box of parent block",
+              "format": "float"
+            },
+            "interactionHelpYOffset": {
+              "type": "number",
+              "format": "float"
+            },
+            "textureSubIdForBlockColor": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "notSnowCovered": {
+              "$ref": "#/definitions/Block"
+            },
+            "snowCovered1": {
+              "$ref": "#/definitions/Block"
+            },
+            "snowCovered2": {
+              "$ref": "#/definitions/Block"
+            },
+            "snowCovered3": {
+              "$ref": "#/definitions/Block"
+            },
+            "snowLevel": {
+              "type": "number",
+              "format": "float"
+            },
+            "waveFlagMinY": {
+              "type": "number",
+              "format": "float"
+            },
+            "id": {
+              "type": "integer",
+              "description": "Returns the block id",
+              "format": "int32"
+            },
+            "itemClass": {
+              "description": "Returns EnumItemClass.Block",
+              "oneOf": [
+                {
+                  "$ref": "#/definitions/EnumItemClass"
+                }
+              ]
+            },
+            "firstTextureInventory": {
+              "description": "Returns the first textures in the TexturesInventory dictionary",
+              "oneOf": [
+                {
+                  "$ref": "#/definitions/CompositeTexture"
+                }
+              ]
+            },
+            "pushVector": {
+              "description": "Entity pushing while an entity is inside this block. Read from attributes because i'm lazy.",
+              "oneOf": [
+                {
+                  "$ref": "#/definitions/Vec3d"
+                }
+              ]
+            },
+            "allSidesOpaque": {
+              "type": "boolean",
+              "description": "Sets the whole SideOpaque array to true "
+            },
+            "climateColorMapForMap": {
+              "type": "string"
+            },
+            "seasonColorMapForMap": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "EnumDrawType": {
+      "type": "string",
+      "description": "",
+      "x-enumNames": [
+        "BlockLayer_1",
+        "BlockLayer_2",
+        "BlockLayer_3",
+        "BlockLayer_4",
+        "BlockLayer_5",
+        "BlockLayer_6",
+        "BlockLayer_7",
+        "JSON",
+        "Empty",
+        "Cube",
+        "Cross",
+        "Transparent",
+        "Liquid",
+        "TopSoil",
+        "CrossAndSnowlayer",
+        "JSONAndWater",
+        "JSONAndSnowLayer",
+        "CrossAndSnowlayer_2",
+        "CrossAndSnowlayer_3",
+        "CrossAndSnowlayer_4",
+        "SurfaceLayer"
+      ],
+      "enum": [
+        "blockLayer_1",
+        "blockLayer_2",
+        "blockLayer_3",
+        "blockLayer_4",
+        "blockLayer_5",
+        "blockLayer_6",
+        "blockLayer_7",
+        "json",
+        "empty",
+        "cube",
+        "cross",
+        "transparent",
+        "liquid",
+        "topSoil",
+        "crossAndSnowlayer",
+        "jsonAndWater",
+        "jsonAndSnowLayer",
+        "crossAndSnowlayer_2",
+        "crossAndSnowlayer_3",
+        "crossAndSnowlayer_4",
+        "surfaceLayer"
+      ]
+    },
+    "EnumChunkRenderPass": {
+      "type": "string",
+      "description": "The various render passes available for rendering blocks",
+      "x-enumNames": [
+        "Opaque",
+        "OpaqueNoCull",
+        "BlendNoCull",
+        "Transparent",
+        "Liquid",
+        "TopSoil",
+        "Meta"
+      ],
+      "enum": [
+        "opaque",
+        "opaqueNoCull",
+        "blendNoCull",
+        "transparent",
+        "liquid",
+        "topSoil",
+        "meta"
+      ]
+    },
+    "BlockSounds": {
+      "type": "object",
+      "properties": {
+        "ambient": {
+          "type": "string"
+        },
+        "ambientBlockCount": {
+          "type": "number",
+          "format": "float"
+        },
+        "walk": {
+          "type": "string"
+        },
+        "inside": {
+          "type": "string"
+        },
+        "break": {
+          "type": "string"
+        },
+        "place": {
+          "type": "string"
+        },
+        "hit": {
+          "type": "string"
+        },
+        "byTool": {
+          "type": "object",
+          "description": "Gets the sound that occurs when a specific tool hits a block.",
+          "x-dictionaryKey": {
+            "$ref": "#/definitions/EnumTool"
+          },
+          "additionalProperties": {
+            "$ref": "#/definitions/BlockSounds"
+          }
+        }
+      }
+    },
+    "VertexFlags": {
+      "type": "object",
+      "description": "Special class to handle the vertex flagging in a very nicely compressed space.",
+      "properties": {
+        "all": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "allWithoutWaveFlags": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "glowLevel": {
+          "type": "integer",
+          "format": "byte"
+        },
+        "zOffset": {
+          "type": "integer",
+          "format": "byte"
+        },
+        "grassWindWave": {
+          "type": "boolean"
+        },
+        "waterWave": {
+          "type": "boolean"
+        },
+        "reflective": {
+          "type": "boolean"
+        },
+        "weakWave": {
+          "type": "boolean"
+        },
+        "normal": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "leavesWindWave": {
+          "type": "boolean"
+        },
+        "windSway": {
+          "type": "boolean"
+        },
+        "foliageWaveSpecial": {
+          "type": "integer",
+          "description": "0 = default\n1 = On weak wave, also have only low frequency jiggle\n2 = unused\n3 = Solid fruit and Stalk, rotate with origin\n4 = Fruit underleaves"
+        },
+        "lod0Fade": {
+          "type": "boolean"
+        }
+      }
+    },
+    "EnumRandomizeAxes": {
+      "type": "string",
+      "description": "",
+      "x-enumNames": [
+        "XYZ",
+        "XZ"
+      ],
+      "enum": [
+        "xyz",
+        "xz"
+      ]
+    },
+    "MeshData": {
+      "type": "object",
+      "description": "A data structure that can be used to upload mesh information onto the graphics card\nPlease note, all arrays are used as a buffer. They do not tightly fit the data but are always sized as a multiple of 2 from the initial size.",
+      "properties": {
+        "xyz": {
+          "type": "array",
+          "description": "The x/y/z coordinates buffer. This should hold VerticesCount*3 values.",
+          "items": {
+            "type": "number",
+            "format": "float"
+          }
+        },
+        "flags": {
+          "type": "array",
+          "description": "The render flags buffer. This should hold VerticesCount*1 values.",
+          "items": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "normals": {
+          "type": "array",
+          "description": "The normals buffer. This should hold VerticesCount*1 values. Currently unused by the engine.\nGL_INT_2_10_10_10_REV Format\nx: bits 0-9    (10 bit signed int)\ny: bits 10-19  (10 bit signed int)\nz: bits 20-29  (10 bit signed int) \nw: bits 30-31",
+          "items": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "uv": {
+          "type": "array",
+          "description": "The uv buffer for texture coordinates. This should hold VerticesCount*2 values.",
+          "items": {
+            "type": "number",
+            "format": "float"
+          }
+        },
+        "rgba": {
+          "type": "string",
+          "description": "The vertex color buffer. This should hold VerticesCount*4 values.",
+          "format": "byte"
+        },
+        "indices": {
+          "type": "array",
+          "description": "The indices buffer. This should hold IndicesCount values.",
+          "items": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "customFloats": {
+          "description": "Custom floats buffer. Can be used to upload arbitrary amounts of float values onto the graphics card",
+          "oneOf": [
+            {
+              "$ref": "#/definitions/CustomMeshDataPartFloat"
+            }
+          ]
+        },
+        "customInts": {
+          "description": "Custom ints buffer. Can be used to upload arbitrary amounts of int values onto the graphics card",
+          "oneOf": [
+            {
+              "$ref": "#/definitions/CustomMeshDataPartInt"
+            }
+          ]
+        },
+        "customShorts": {
+          "description": "Custom shorts buffer. Can be used to upload arbitrary amounts of short values onto the graphics card",
+          "oneOf": [
+            {
+              "$ref": "#/definitions/CustomMeshDataPartShort"
+            }
+          ]
+        },
+        "customBytes": {
+          "description": "Custom bytes buffer. Can be used to upload arbitrary amounts of byte values onto the graphics card",
+          "oneOf": [
+            {
+              "$ref": "#/definitions/CustomMeshDataPartByte"
+            }
+          ]
+        },
+        "xyzInstanced": {
+          "type": "boolean",
+          "description": "When using instanced rendering, set this flag to have the xyz values instanced."
+        },
+        "uvInstanced": {
+          "type": "boolean",
+          "description": "When using instanced rendering, set this flag to have the uv values instanced."
+        },
+        "rgbaInstanced": {
+          "type": "boolean",
+          "description": "When using instanced rendering, set this flag to have the rgba values instanced."
+        },
+        "rgba2Instanced": {
+          "type": "boolean",
+          "description": "When using instanced rendering, set this flag to have the rgba2 values instanced."
+        },
+        "indicesInstanced": {
+          "type": "boolean",
+          "description": "When using instanced rendering, set this flag to have the indices instanced."
+        },
+        "flagsInstanced": {
+          "type": "boolean",
+          "description": "When using instanced rendering, set this flag to have the flags instanced."
+        },
+        "xyzStatic": {
+          "type": "boolean",
+          "description": "xyz vbo usage hints for the graphics card. Recommended to be set to false when this section of data changes often."
+        },
+        "uvStatic": {
+          "type": "boolean",
+          "description": "uv vbo usage hints for the graphics card. Recommended to be set to false when this section of data changes often."
+        },
+        "rgbaStatic": {
+          "type": "boolean",
+          "description": "rgab vbo usage hints for the graphics card. Recommended to be set to false when this section of data changes often."
+        },
+        "rgba2Static": {
+          "type": "boolean",
+          "description": "rgba2 vbo usage hints for the graphics card. Recommended to be set to false when this section of data changes often."
+        },
+        "indicesStatic": {
+          "type": "boolean",
+          "description": "indices vbo usage hints for the graphics card. Recommended to be set to false when this section of data changes often."
+        },
+        "flagsStatic": {
+          "type": "boolean",
+          "description": "flags vbo usage hints for the graphics card. Recommended to be set to false when this section of data changes often."
+        },
+        "xyzOffset": {
+          "type": "integer",
+          "description": "For offseting the data in the VBO. This field is used when updating a mesh.",
+          "format": "int32"
+        },
+        "uvOffset": {
+          "type": "integer",
+          "description": "For offseting the data in the VBO. This field is used when updating a mesh.",
+          "format": "int32"
+        },
+        "rgbaOffset": {
+          "type": "integer",
+          "description": "For offseting the data in the VBO. This field is used when updating a mesh.",
+          "format": "int32"
+        },
+        "rgba2Offset": {
+          "type": "integer",
+          "description": "For offseting the data in the VBO. This field is used when updating a mesh.",
+          "format": "int32"
+        },
+        "flagsOffset": {
+          "type": "integer",
+          "description": "For offseting the data in the VBO. This field is used when updating a mesh.",
+          "format": "int32"
+        },
+        "normalsOffset": {
+          "type": "integer",
+          "description": "For offseting the data in the VBO. This field is used when updating a mesh.",
+          "format": "int32"
+        },
+        "indicesOffset": {
+          "type": "integer",
+          "description": "For offseting the data in the VBO. This field is used when updating a mesh.",
+          "format": "int32"
+        },
+        "mode": {
+          "description": "The meshes draw mode",
+          "oneOf": [
+            {
+              "$ref": "#/definitions/EnumDrawMode"
+            }
+          ]
+        },
+        "normalsCount": {
+          "type": "integer",
+          "description": "Amount of currently assigned normals",
+          "format": "int32"
+        },
+        "verticesCount": {
+          "type": "integer",
+          "description": "Amount of currently assigned vertices",
+          "format": "int32"
+        },
+        "indicesCount": {
+          "type": "integer",
+          "description": "Amount of currently assigned indices",
+          "format": "int32"
+        },
+        "verticesMax": {
+          "type": "integer",
+          "description": "Vertex buffer size",
+          "format": "int32"
+        },
+        "indicesMax": {
+          "type": "integer",
+          "description": "Index buffer size",
+          "format": "int32"
+        },
+        "xyzFaces": {
+          "type": "string",
+          "description": "BlockShapeTesselator xyz faces. Required by TerrainChunkTesselator to determine vertex lightness. Should hold VerticesCount / 4 values. Set to 0 for no face, set to 1..8 for faces 0..7",
+          "format": "byte"
+        },
+        "xyzFacesCount": {
+          "type": "integer",
+          "description": "Amount of assigned xyz face values",
+          "format": "int32"
+        },
+        "indicesPerFace": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "verticesPerFace": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "climateColorMapIds": {
+          "type": "string",
+          "description": "BlockShapeTesselator climate colormap ids. Required by TerrainChunkTesselator to determine whether to color a vertex by a color map or not. Should hold VerticesCount / 4 values. Set to 0 for no color mapping, set 1..n for color map 0..n-1",
+          "format": "byte"
+        },
+        "seasonColorMapIds": {
+          "type": "string",
+          "description": "BlockShapeTesselator season colormap ids. Required by TerrainChunkTesselator to determine whether to color a vertex by a color map or not. Should hold VerticesCount / 4 values. Set to 0 for no color mapping, set 1..n for color map 0..n-1",
+          "format": "byte"
+        },
+        "renderPassesAndExtraBits": {
+          "type": "array",
+          "description": "BlockShapeTesselator renderpass. Required by TerrainChunkTesselator to determine in which mesh data pool each quad should land in. Should hold VerticesCount / 4 values.\nLower 10 bits = render pass\nUpper 6 bits = extra bits for tesselators\n   Bit 10: DisableRandomDrawOffset",
+          "items": {
+            "type": "integer"
+          }
+        },
+        "colorMapIdsCount": {
+          "type": "integer",
+          "description": "Amount of assigned tint values",
+          "format": "int32"
+        },
+        "renderPassCount": {
+          "type": "integer",
+          "description": "Amount of assigned render pass values",
+          "format": "int32"
+        },
+        "renderPasses": {
+          "type": "array",
+          "x-deprecated": true,
+          "x-deprecatedMessage": "Use RenderPassesAndExtraBits instead",
+          "items": {
+            "type": "integer"
+          }
+        },
+        "xyzCount": {
+          "type": "integer",
+          "description": "returns VerticesCount * 3",
+          "format": "int32"
+        },
+        "rgbaCount": {
+          "type": "integer",
+          "description": "returns VerticesCount * 4",
+          "format": "int32"
+        },
+        "rgba2Count": {
+          "type": "integer",
+          "description": "returns VerticesCount * 4",
+          "format": "int32"
+        },
+        "flagsCount": {
+          "type": "integer",
+          "description": "returns VerticesCount",
+          "format": "int32"
+        },
+        "uvCount": {
+          "type": "integer",
+          "description": "returns VerticesCount * 2",
+          "format": "int32"
+        }
+      }
+    },
+    "CustomMeshDataPartFloat": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/CustomMeshDataPartOfSingle"
+        },
+        {
+          "type": "object",
+          "description": "Holds arbitrary float data for meshes to be used in the shader"
+        }
+      ]
+    },
+    "CustomMeshDataPartOfSingle": {
+      "type": "object",
+      "description": "Holds arbitrary mesh data for meshes to be used in a shader",
+      "x-abstract": true,
+      "properties": {
+        "values": {
+          "type": "array",
+          "description": "The arbitrary data to be uploaded to the graphics card",
+          "items": {
+            "type": "number",
+            "format": "float"
+          }
+        },
+        "count": {
+          "type": "integer",
+          "description": "Amout of values currently added",
+          "format": "int32"
+        },
+        "interleaveSizes": {
+          "type": "array",
+          "description": "Amount of variable components for variable (i.e. 2, 3 for a vec2 and a vec3), valid values are 1, 2, 3 and 4 (limited by glVertexAttribPointer)",
+          "items": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "interleaveStride": {
+          "type": "integer",
+          "description": "Stride - Size in bytes of all values for one vertex",
+          "format": "int32"
+        },
+        "interleaveOffsets": {
+          "type": "array",
+          "description": "Offset in bytes for each variable ",
+          "items": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "instanced": {
+          "type": "boolean",
+          "description": "For instanced rendering"
+        },
+        "staticDraw": {
+          "type": "boolean",
+          "description": "Set to false if you intend to update the buffer very often (i.e. every frame)"
+        },
+        "baseOffset": {
+          "type": "integer",
+          "description": "Used as offset when doing a partial update on an existing buffer",
+          "format": "int32"
+        },
+        "bufferSize": {
+          "type": "integer",
+          "description": "Size of the Values array",
+          "format": "int32"
+        },
+        "allocationSize": {
+          "type": "integer",
+          "description": "Size of the array that should be allocated on the graphics card.",
+          "format": "int32"
+        }
+      }
+    },
+    "CustomMeshDataPartInt": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/CustomMeshDataPartOfInteger"
+        },
+        {
+          "type": "object",
+          "description": "Holds arbitrary int data for meshes to be used in the shader",
+          "properties": {
+            "conversion": {
+              "$ref": "#/definitions/DataConversion"
+            }
+          }
+        }
+      ]
+    },
+    "DataConversion": {
+      "type": "string",
+      "description": "",
+      "x-enumNames": [
+        "Float",
+        "NormalizedFloat",
+        "Integer"
+      ],
+      "enum": [
+        "float",
+        "normalizedFloat",
+        "integer"
+      ]
+    },
+    "CustomMeshDataPartOfInteger": {
+      "type": "object",
+      "description": "Holds arbitrary mesh data for meshes to be used in a shader",
+      "x-abstract": true,
+      "properties": {
+        "values": {
+          "type": "array",
+          "description": "The arbitrary data to be uploaded to the graphics card",
+          "items": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "count": {
+          "type": "integer",
+          "description": "Amout of values currently added",
+          "format": "int32"
+        },
+        "interleaveSizes": {
+          "type": "array",
+          "description": "Amount of variable components for variable (i.e. 2, 3 for a vec2 and a vec3), valid values are 1, 2, 3 and 4 (limited by glVertexAttribPointer)",
+          "items": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "interleaveStride": {
+          "type": "integer",
+          "description": "Stride - Size in bytes of all values for one vertex",
+          "format": "int32"
+        },
+        "interleaveOffsets": {
+          "type": "array",
+          "description": "Offset in bytes for each variable ",
+          "items": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "instanced": {
+          "type": "boolean",
+          "description": "For instanced rendering"
+        },
+        "staticDraw": {
+          "type": "boolean",
+          "description": "Set to false if you intend to update the buffer very often (i.e. every frame)"
+        },
+        "baseOffset": {
+          "type": "integer",
+          "description": "Used as offset when doing a partial update on an existing buffer",
+          "format": "int32"
+        },
+        "bufferSize": {
+          "type": "integer",
+          "description": "Size of the Values array",
+          "format": "int32"
+        },
+        "allocationSize": {
+          "type": "integer",
+          "description": "Size of the array that should be allocated on the graphics card.",
+          "format": "int32"
+        }
+      }
+    },
+    "CustomMeshDataPartShort": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/CustomMeshDataPartOfShort"
+        },
+        {
+          "type": "object",
+          "description": "Holds arbitrary short data for meshes to be used in the shader",
+          "properties": {
+            "conversion": {
+              "$ref": "#/definitions/DataConversion"
+            }
+          }
+        }
+      ]
+    },
+    "CustomMeshDataPartOfShort": {
+      "type": "object",
+      "description": "Holds arbitrary mesh data for meshes to be used in a shader",
+      "x-abstract": true,
+      "properties": {
+        "values": {
+          "type": "array",
+          "description": "The arbitrary data to be uploaded to the graphics card",
+          "items": {
+            "type": "integer"
+          }
+        },
+        "count": {
+          "type": "integer",
+          "description": "Amout of values currently added",
+          "format": "int32"
+        },
+        "interleaveSizes": {
+          "type": "array",
+          "description": "Amount of variable components for variable (i.e. 2, 3 for a vec2 and a vec3), valid values are 1, 2, 3 and 4 (limited by glVertexAttribPointer)",
+          "items": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "interleaveStride": {
+          "type": "integer",
+          "description": "Stride - Size in bytes of all values for one vertex",
+          "format": "int32"
+        },
+        "interleaveOffsets": {
+          "type": "array",
+          "description": "Offset in bytes for each variable ",
+          "items": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "instanced": {
+          "type": "boolean",
+          "description": "For instanced rendering"
+        },
+        "staticDraw": {
+          "type": "boolean",
+          "description": "Set to false if you intend to update the buffer very often (i.e. every frame)"
+        },
+        "baseOffset": {
+          "type": "integer",
+          "description": "Used as offset when doing a partial update on an existing buffer",
+          "format": "int32"
+        },
+        "bufferSize": {
+          "type": "integer",
+          "description": "Size of the Values array",
+          "format": "int32"
+        },
+        "allocationSize": {
+          "type": "integer",
+          "description": "Size of the array that should be allocated on the graphics card.",
+          "format": "int32"
+        }
+      }
+    },
+    "CustomMeshDataPartByte": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/CustomMeshDataPartOfByte"
+        },
+        {
+          "type": "object",
+          "description": "Holds arbitrary byte data for meshes to be used in the shader",
+          "properties": {
+            "conversion": {
+              "$ref": "#/definitions/DataConversion"
+            }
+          }
+        }
+      ]
+    },
+    "CustomMeshDataPartOfByte": {
+      "type": "object",
+      "description": "Holds arbitrary mesh data for meshes to be used in a shader",
+      "x-abstract": true,
+      "properties": {
+        "values": {
+          "type": "string",
+          "description": "The arbitrary data to be uploaded to the graphics card",
+          "format": "byte"
+        },
+        "count": {
+          "type": "integer",
+          "description": "Amout of values currently added",
+          "format": "int32"
+        },
+        "interleaveSizes": {
+          "type": "array",
+          "description": "Amount of variable components for variable (i.e. 2, 3 for a vec2 and a vec3), valid values are 1, 2, 3 and 4 (limited by glVertexAttribPointer)",
+          "items": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "interleaveStride": {
+          "type": "integer",
+          "description": "Stride - Size in bytes of all values for one vertex",
+          "format": "int32"
+        },
+        "interleaveOffsets": {
+          "type": "array",
+          "description": "Offset in bytes for each variable ",
+          "items": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "instanced": {
+          "type": "boolean",
+          "description": "For instanced rendering"
+        },
+        "staticDraw": {
+          "type": "boolean",
+          "description": "Set to false if you intend to update the buffer very often (i.e. every frame)"
+        },
+        "baseOffset": {
+          "type": "integer",
+          "description": "Used as offset when doing a partial update on an existing buffer",
+          "format": "int32"
+        },
+        "bufferSize": {
+          "type": "integer",
+          "description": "Size of the Values array",
+          "format": "int32"
+        },
+        "allocationSize": {
+          "type": "integer",
+          "description": "Size of the array that should be allocated on the graphics card.",
+          "format": "int32"
+        }
+      }
+    },
+    "EnumDrawMode": {
+      "type": "string",
+      "description": "",
+      "x-enumNames": [
+        "Triangles",
+        "Lines",
+        "LineStrip"
+      ],
+      "enum": [
+        "triangles",
+        "lines",
+        "lineStrip"
+      ]
+    },
+    "EnumFaceCullMode": {
+      "type": "string",
+      "description": "",
+      "x-enumNames": [
+        "Default",
+        "NeverCull",
+        "Merge",
+        "Collapse",
+        "MergeMaterial",
+        "CollapseMaterial",
+        "Liquid",
+        "Callback",
+        "MergeSnowLayer",
+        "FlushExceptTop",
+        "Stairs"
+      ],
+      "enum": [
+        "default",
+        "neverCull",
+        "merge",
+        "collapse",
+        "mergeMaterial",
+        "collapseMaterial",
+        "liquid",
+        "callback",
+        "mergeSnowLayer",
+        "flushExceptTop",
+        "stairs"
+      ]
+    },
+    "ColorMap": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string"
+        },
+        "texture": {
+          "$ref": "#/definitions/CompositeTexture"
+        },
+        "padding": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "loadIntoBlockTextureAtlas": {
+          "type": "boolean"
+        },
+        "extraFlags": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "pixels": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "outerSize": {
+          "$ref": "#/definitions/Size2i"
+        },
+        "blockAtlasTextureSubId": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "rectIndex": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "Size2i": {
+      "type": "object",
+      "description": "Represents a vector of 2 doubles. Go bug Tyron of you need more utility methods in this class.",
+      "properties": {
+        "width": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "height": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "Cuboidf": {
+      "type": "object",
+      "description": "Represents a three dimensional axis-aligned cuboid using two 3d coordinates. Used for collision and selection boxes.",
+      "properties": {
+        "x1": {
+          "type": "number",
+          "format": "float"
+        },
+        "y1": {
+          "type": "number",
+          "format": "float"
+        },
+        "z1": {
+          "type": "number",
+          "format": "float"
+        },
+        "x2": {
+          "type": "number",
+          "format": "float"
+        },
+        "y2": {
+          "type": "number",
+          "format": "float"
+        },
+        "z2": {
+          "type": "number",
+          "format": "float"
+        },
+        "xSize": {
+          "type": "number",
+          "description": "This is equivalent to width so long as X2 &gt; X1, but could in theory be a negative number if the box has its corners the wrong way around",
+          "format": "float"
+        },
+        "ySize": {
+          "type": "number",
+          "description": "This is equivalent to height so long as Y2 &gt; Y1, but could in theory be a negative number if the box has its corners the wrong way around",
+          "format": "float"
+        },
+        "zSize": {
+          "type": "number",
+          "description": "This is equivalent to length so long as Z2 &gt; Z1, but could in theory be a negative number if the box has its corners the wrong way around",
+          "format": "float"
+        },
+        "width": {
+          "type": "number",
+          "format": "float"
+        },
+        "height": {
+          "type": "number",
+          "format": "float"
+        },
+        "length": {
+          "type": "number",
+          "format": "float"
+        },
+        "minX": {
+          "type": "number",
+          "format": "float"
+        },
+        "minY": {
+          "type": "number",
+          "format": "float"
+        },
+        "minZ": {
+          "type": "number",
+          "format": "float"
+        },
+        "maxX": {
+          "type": "number",
+          "format": "float"
+        },
+        "maxY": {
+          "type": "number",
+          "format": "float"
+        },
+        "maxZ": {
+          "type": "number",
+          "format": "float"
+        },
+        "midX": {
+          "type": "number",
+          "format": "float"
+        },
+        "midY": {
+          "type": "number",
+          "format": "float"
+        },
+        "midZ": {
+          "type": "number",
+          "format": "float"
+        },
+        "empty": {
+          "type": "boolean",
+          "description": "True when all values are 0"
+        },
+        "start": {
+          "$ref": "#/definitions/Vec3f"
+        },
+        "end": {
+          "$ref": "#/definitions/Vec3f"
+        }
+      }
+    },
+    "BlockBehavior": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/CollectibleBehavior"
+        },
+        {
+          "type": "object",
+          "x-abstract": true,
+          "properties": {
+            "block": {
+              "description": "The block for this behavior instance.",
+              "oneOf": [
+                {
+                  "$ref": "#/definitions/Block"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "CollectibleBehavior": {
+      "type": "object",
+      "x-abstract": true,
+      "properties": {
+        "collObj": {
+          "description": "The collectible object (item or block) for this behavior instance.",
+          "oneOf": [
+            {
+              "$ref": "#/definitions/CollectibleObject"
+            }
+          ]
+        },
+        "propertiesAtString": {
+          "type": "string",
+          "description": "The properties of this block behavior."
+        },
+        "clientSideOptional": {
+          "type": "boolean",
+          "description": "If true, this behavior is not required on the client. This is here because copygirl doesn't stop asking for it. Probably breaks things. If it breaks things, complain to copygirl please :p"
+        }
+      }
+    },
+    "BlockEntityBehaviorType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "properties": {
+          "$ref": "#/definitions/JsonObject"
+        }
+      }
+    },
+    "BlockCropProperties": {
+      "type": "object",
+      "properties": {
+        "requiredNutrient": {
+          "$ref": "#/definitions/EnumSoilNutrient"
+        },
+        "nutrientConsumption": {
+          "type": "number",
+          "format": "float"
+        },
+        "growthStages": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "totalGrowthDays": {
+          "type": "number",
+          "format": "float"
+        },
+        "multipleHarvests": {
+          "type": "boolean"
+        },
+        "harvestGrowthStageLoss": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "coldDamageBelow": {
+          "type": "number",
+          "format": "float"
+        },
+        "damageGrowthStuntMul": {
+          "type": "number",
+          "format": "float"
+        },
+        "coldDamageRipeMul": {
+          "type": "number",
+          "format": "float"
+        },
+        "heatDamageAbove": {
+          "type": "number",
+          "format": "float"
+        },
+        "behaviors": {
+          "type": "array",
+          "description": "Allows customization of crop growth behavior. BlockEntityFarmland calls methods on all behaviors to allow greater control.",
+          "items": {
+            "$ref": "#/definitions/CropBehavior"
+          }
+        }
+      }
+    },
+    "EnumSoilNutrient": {
+      "type": "string",
+      "description": "",
+      "x-enumNames": [
+        "N",
+        "P",
+        "K"
+      ],
+      "enum": [
+        "n",
+        "p",
+        "k"
+      ]
+    },
+    "CropBehavior": {
+      "type": "object",
+      "x-abstract": true,
+      "properties": {
+        "block": {
+          "$ref": "#/definitions/Block"
+        }
+      }
+    },
+    "EvolvingNatFloat": {
+      "type": "object",
+      "description": "A number generator whose return value changes over time, parametrized by a transform function and some constants",
+      "properties": {
+        "factor": {
+          "type": "number",
+          "format": "float"
+        },
+        "maxValue": {
+          "type": [
+            "null",
+            "number"
+          ],
+          "format": "float"
+        },
+        "transform": {
+          "$ref": "#/definitions/EnumTransformFunction"
+        }
+      }
+    },
+    "EnumTransformFunction": {
+      "type": "string",
+      "description": "Used for EvolvingNatFloat value transforms",
+      "x-enumNames": [
+        "IDENTICAL",
+        "LINEAR",
+        "LINEARNULLIFY",
+        "LINEARREDUCE",
+        "LINEARINCREASE",
+        "QUADRATIC",
+        "INVERSELINEAR",
+        "ROOT",
+        "SINUS",
+        "CLAMPEDPOSITIVESINUS",
+        "COSINUS",
+        "SMOOTHSTEP"
+      ],
+      "enum": [
+        "identical",
+        "linear",
+        "linearnullify",
+        "linearreduce",
+        "linearincrease",
+        "quadratic",
+        "inverselinear",
+        "root",
+        "sinus",
+        "clampedpositivesinus",
+        "cosinus",
+        "smoothstep"
+      ]
+    },
+    "EnumParticleModel": {
+      "type": "string",
+      "description": "",
+      "x-enumNames": [
+        "Quad",
+        "Cube"
+      ],
+      "enum": [
+        "quad",
+        "cube"
+      ]
+    },
+    "EnumItemStorageFlags": {
+      "type": "string",
+      "description": "Determines the kinds of storage types the item can be put into",
+      "x-enumFlags": true,
+      "x-enumNames": [
+        "General",
+        "Backpack",
+        "Metallurgy",
+        "Jewellery",
+        "Alchemy",
+        "Agriculture",
+        "Currency",
+        "Outfit",
+        "Offhand",
+        "Arrow",
+        "Reserved2",
+        "Custom1",
+        "Custom2",
+        "Custom3",
+        "Custom4",
+        "Custom5",
+        "Custom6",
+        "Custom7",
+        "Custom8",
+        "Custom9",
+        "Custom10"
+      ],
+      "enum": [
+        "general",
+        "backpack",
+        "metallurgy",
+        "jewellery",
+        "alchemy",
+        "agriculture",
+        "currency",
+        "outfit",
+        "offhand",
+        "arrow",
+        "reserved2",
+        "custom1",
+        "custom2",
+        "custom3",
+        "custom4",
+        "custom5",
+        "custom6",
+        "custom7",
+        "custom8",
+        "custom9",
+        "custom10"
+      ]
+    },
+    "RegistryObject": {
+      "type": "object",
+      "x-abstract": true,
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "A unique domain + code of the object. Must be globally unique for all items / all blocks / all entities."
+        },
+        "variantStrict": {
+          "description": "Variant values as resolved from blocktype/itemtype or entitytype",
+          "oneOf": [
+            {
+              "$ref": "#/definitions/OrderedDictionaryOfStringAndString"
+            }
+          ]
+        },
+        "variant": {
+          "description": "Variant values as resolved from blocktype/itemtype or entitytype. Will not throw an null pointer exception when the key does not exist, but return null instead.",
+          "oneOf": [
+            {
+              "$ref": "#/definitions/RelaxedReadOnlyDictionaryOfStringAndString"
+            }
+          ]
+        },
+        "class": {
+          "type": "string",
+          "description": "The class handeling the object"
+        }
+      }
+    },
+    "OrderedDictionaryOfStringAndString": {
+      "type": "object",
+      "description": "Same as your normal C# Dictionary but ensures that the order in which the items are added is remembered. That way you can iterate over the dictionary with the insert order intact or set/get elements by index.\nTaken from http://www.codeproject.com/Articles/18615/OrderedDictionary-T-A-generic-implementation-of-IO\nPlease be aware that this is not a very efficient implementation, recommed use only for small sets of data.",
+      "properties": {
+        "InternalDictionary": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "Item": {
+          "type": "string"
+        },
+        "Count": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "Keys": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "ValuesOrdered": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "Values": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "IsReadOnly": {
+          "type": "boolean"
+        }
+      }
+    },
+    "RelaxedReadOnlyDictionaryOfStringAndString": {
+      "type": "object",
+      "properties": {
+        "Item": {
+          "type": "string"
+        },
+        "Keys": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "Values": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "Count": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "IsReadOnly": {
+          "type": "boolean"
+        }
+      }
+    },
+    "Item": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/CollectibleObject"
+        },
+        {
+          "type": "object",
+          "description": "Represents an in game Item of Vintage Story",
+          "properties": {
+            "itemId": {
+              "type": "integer",
+              "description": "The unique number of the item, dynamically assigned by the game",
+              "format": "int32"
+            },
+            "shape": {
+              "description": "The items shape. Null for automatic shape based on the texture.",
+              "oneOf": [
+                {
+                  "$ref": "#/definitions/CompositeShape"
+                }
+              ]
+            },
+            "textures": {
+              "type": "object",
+              "description": "Default textures to be used for this block",
+              "additionalProperties": {
+                "$ref": "#/definitions/CompositeTexture"
+              }
+            },
+            "id": {
+              "type": "integer",
+              "description": "The unique number of the item, dynamically assigned by the game",
+              "format": "int32"
+            },
+            "itemClass": {
+              "description": "The type of the collectible object",
+              "oneOf": [
+                {
+                  "$ref": "#/definitions/EnumItemClass"
+                }
+              ]
+            },
+            "firstTexture": {
+              "description": "Returns the first texture in Textures",
+              "oneOf": [
+                {
+                  "$ref": "#/definitions/CompositeTexture"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "RegistryObjectType": {
+      "type": "object",
+      "x-abstract": true,
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "jsonObject": {},
+        "code": {
+          "type": "string"
+        },
+        "variantGroups": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RegistryObjectVariantGroup"
+          }
+        },
+        "variant": {
+          "$ref": "#/definitions/OrderedDictionaryOfStringAndString"
+        },
+        "interactions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/WorldInteraction"
+          }
+        },
+        "skipVariants": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "allowedVariants": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "allowedVariantsQuickLookup": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "class": {
+          "type": "string"
+        }
+      }
+    },
+    "RegistryObjectVariantGroup": {
+      "type": "object",
+      "properties": {
+        "loadFromProperties": {
+          "type": "string"
+        },
+        "loadFromPropertiesCombine": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "code": {
+          "type": "string"
+        },
+        "states": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "combine": {
+          "$ref": "#/definitions/EnumCombination"
+        },
+        "onVariant": {
+          "type": "string"
+        },
+        "isValue": {
+          "type": "string"
+        }
+      }
+    },
+    "EnumCombination": {
+      "type": "string",
+      "description": "",
+      "x-enumNames": [
+        "Add",
+        "Multiply",
+        "SelectiveMultiply"
+      ],
+      "enum": [
+        "add",
+        "multiply",
+        "selectiveMultiply"
+      ]
+    },
+    "WorldInteraction": {
+      "type": "object",
+      "properties": {
+        "mouseButton": {
+          "description": "Left or Right mouse button?",
+          "oneOf": [
+            {
+              "$ref": "#/definitions/EnumMouseButton"
+            }
+          ]
+        },
+        "hotKeyCode": {
+          "type": "string",
+          "description": "Does it require pressing a key to perform this action (e.g. \"sneak\" for sneaking)"
+        },
+        "actionLangCode": {
+          "type": "string",
+          "description": "The text to show, will be used in the form of Lang.Get(ActionLangCode); "
+        },
+        "jsonItemStacks": {
+          "type": "array",
+          "description": "Does the player need to hold a certain items/blocks in hands? (e.g. a knife). You can define an array of item stacks here and the game will loop through them in a 1 second interval.\nThis property is loaded from the entitytypes and blocktype json files and then resolved.",
+          "items": {
+            "$ref": "#/definitions/JsonItemStack"
+          }
+        },
+        "itemstacks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ItemStack"
+          }
+        },
+        "requireFreeHand": {
+          "type": "boolean",
+          "description": "If true, the interaction only applies when the player has no slot in hands"
+        },
+        "getMatchingStacks": {
+          "description": "Only applicable when ItemStacks is non null. If set, this method will be executed before adding the interaction. Lets you return a filtered list of itemstacks that can be used for this interaction (or null/empty array for not interactable)",
+          "oneOf": [
+            {
+              "$ref": "#/definitions/InteractionStacksDelegate"
+            }
+          ]
+        },
+        "shouldApply": {
+          "description": "Only applicable when ItemStacks is null. If set and the method returns falsee, the interaction will not be displayed",
+          "oneOf": [
+            {
+              "$ref": "#/definitions/InteractionMatcherDelegate"
+            }
+          ]
+        },
+        "hotKeyCodes": {
+          "type": "array",
+          "description": "Does it require pressing multiple keys to perform this action (if set then HotkeyCode is ignored)",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "EnumMouseButton": {
+      "type": "string",
+      "description": "",
+      "x-enumNames": [
+        "Left",
+        "Middle",
+        "Right",
+        "Button1",
+        "Button2",
+        "Button3",
+        "Button4",
+        "Button5",
+        "Button6",
+        "Button7",
+        "Button8",
+        "Button9",
+        "LastButton",
+        "Wheel",
+        "None"
+      ],
+      "enum": [
+        "left",
+        "middle",
+        "right",
+        "button1",
+        "button2",
+        "button3",
+        "button4",
+        "button5",
+        "button6",
+        "button7",
+        "button8",
+        "button9",
+        "lastButton",
+        "wheel",
+        "none"
+      ]
+    },
+    "InteractionStacksDelegate": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/MulticastDelegate"
+        },
+        {
+          "type": "object"
+        }
+      ]
+    },
+    "MulticastDelegate": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/Delegate"
+        },
+        {
+          "type": "object",
+          "x-abstract": true
+        }
+      ]
+    },
+    "Delegate": {
+      "type": "object",
+      "x-abstract": true,
+      "properties": {
+        "_target": {},
+        "_methodBase": {},
+        "_methodPtr": {
+          "$ref": "#/definitions/IntPtr"
+        },
+        "_methodPtrAux": {
+          "$ref": "#/definitions/IntPtr"
+        },
+        "Method": {
+          "$ref": "#/definitions/MethodInfo"
+        },
+        "Target": {}
+      }
+    },
+    "IntPtr": {
+      "type": "object"
+    },
+    "MethodInfo": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/MethodBase"
+        },
+        {
+          "type": "object",
+          "x-abstract": true,
+          "properties": {
+            "memberType": {
+              "$ref": "#/definitions/MemberTypes"
+            },
+            "returnType": {
+              "type": "string"
+            },
+            "returnParameter": {
+              "$ref": "#/definitions/ParameterInfo"
+            }
+          }
+        }
+      ]
+    },
+    "MemberTypes": {
+      "type": "string",
+      "description": "",
+      "x-enumFlags": true,
+      "x-enumNames": [
+        "Constructor",
+        "Event",
+        "Field",
+        "Method",
+        "Property",
+        "TypeInfo",
+        "Custom",
+        "NestedType",
+        "All"
+      ],
+      "enum": [
+        "constructor",
+        "event",
+        "field",
+        "method",
+        "property",
+        "typeInfo",
+        "custom",
+        "nestedType",
+        "all"
+      ]
+    },
+    "ParameterInfo": {
+      "type": "object",
+      "properties": {
+        "parameterType": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "hasDefaultValue": {
+          "type": "boolean"
+        },
+        "defaultValue": {},
+        "rawDefaultValue": {},
+        "position": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "attributes": {
+          "$ref": "#/definitions/ParameterAttributes"
+        },
+        "member": {
+          "$ref": "#/definitions/MemberInfo"
+        },
+        "isIn": {
+          "type": "boolean"
+        },
+        "isOut": {
+          "type": "boolean"
+        },
+        "isLcid": {
+          "type": "boolean"
+        },
+        "isRetval": {
+          "type": "boolean"
+        },
+        "isOptional": {
+          "type": "boolean"
+        },
+        "metadataToken": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "customAttributes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CustomAttributeData"
+          }
+        }
+      }
+    },
+    "ParameterAttributes": {
+      "type": "string",
+      "description": "",
+      "x-enumFlags": true,
+      "x-enumNames": [
+        "None",
+        "In",
+        "Out",
+        "Lcid",
+        "Retval",
+        "Optional",
+        "HasDefault",
+        "HasFieldMarshal",
+        "Reserved3",
+        "Reserved4",
+        "ReservedMask"
+      ],
+      "enum": [
+        "none",
+        "in",
+        "out",
+        "lcid",
+        "retval",
+        "optional",
+        "hasDefault",
+        "hasFieldMarshal",
+        "reserved3",
+        "reserved4",
+        "reservedMask"
+      ]
+    },
+    "MemberInfo": {
+      "type": "object",
+      "x-abstract": true,
+      "properties": {
+        "customAttributes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CustomAttributeData"
+          }
+        },
+        "metadataToken": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "module": {
+          "$ref": "#/definitions/Module"
+        }
+      }
+    },
+    "CustomAttributeData": {
+      "type": "object",
+      "properties": {
+        "attributeType": {
+          "type": "string"
+        },
+        "constructor": {
+          "$ref": "#/definitions/ConstructorInfo"
+        },
+        "constructorArguments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CustomAttributeTypedArgument"
+          }
+        },
+        "namedArguments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CustomAttributeNamedArgument"
+          }
+        }
+      }
+    },
+    "ConstructorInfo": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/MethodBase"
+        },
+        {
+          "type": "object",
+          "x-abstract": true,
+          "properties": {
+            "memberType": {
+              "$ref": "#/definitions/MemberTypes"
+            }
+          }
+        }
+      ]
+    },
+    "MethodBase": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/MemberInfo"
+        },
+        {
+          "type": "object",
+          "x-abstract": true,
+          "properties": {
+            "methodImplementationFlags": {
+              "$ref": "#/definitions/MethodImplAttributes"
+            },
+            "callingConvention": {
+              "$ref": "#/definitions/CallingConventions"
+            },
+            "isGenericMethodDefinition": {
+              "type": "boolean"
+            },
+            "containsGenericParameters": {
+              "type": "boolean"
+            },
+            "isGenericMethod": {
+              "type": "boolean"
+            },
+            "isSecurityCritical": {
+              "type": "boolean"
+            },
+            "isSecuritySafeCritical": {
+              "type": "boolean"
+            },
+            "isSecurityTransparent": {
+              "type": "boolean"
+            },
+            "isPublic": {
+              "type": "boolean"
+            },
+            "isPrivate": {
+              "type": "boolean"
+            },
+            "isFamily": {
+              "type": "boolean"
+            },
+            "isAssembly": {
+              "type": "boolean"
+            },
+            "isFamilyAndAssembly": {
+              "type": "boolean"
+            },
+            "isFamilyOrAssembly": {
+              "type": "boolean"
+            },
+            "isStatic": {
+              "type": "boolean"
+            },
+            "isFinal": {
+              "type": "boolean"
+            },
+            "isVirtual": {
+              "type": "boolean"
+            },
+            "isHideBySig": {
+              "type": "boolean"
+            },
+            "isAbstract": {
+              "type": "boolean"
+            },
+            "isSpecialName": {
+              "type": "boolean"
+            },
+            "isConstructor": {
+              "type": "boolean"
+            }
+          }
+        }
+      ]
+    },
+    "MethodImplAttributes": {
+      "type": "string",
+      "description": "",
+      "x-enumNames": [
+        "IL",
+        "Managed",
+        "Native",
+        "OPTIL",
+        "Runtime",
+        "CodeTypeMask",
+        "Unmanaged",
+        "ManagedMask",
+        "NoInlining",
+        "ForwardRef",
+        "Synchronized",
+        "NoOptimization",
+        "PreserveSig",
+        "AggressiveInlining",
+        "SecurityMitigations",
+        "InternalCall",
+        "MaxMethodImplVal"
+      ],
+      "enum": [
+        "managed",
+        "native",
+        "optil",
+        "codeTypeMask",
+        "unmanaged",
+        "noInlining",
+        "forwardRef",
+        "synchronized",
+        "noOptimization",
+        "preserveSig",
+        "aggressiveInlining",
+        "securityMitigations",
+        "internalCall",
+        "maxMethodImplVal"
+      ]
+    },
+    "CallingConventions": {
+      "type": "string",
+      "description": "",
+      "x-enumFlags": true,
+      "x-enumNames": [
+        "Standard",
+        "VarArgs",
+        "Any",
+        "HasThis",
+        "ExplicitThis"
+      ],
+      "enum": [
+        "standard",
+        "varArgs",
+        "any",
+        "hasThis",
+        "explicitThis"
+      ]
+    },
+    "CustomAttributeTypedArgument": {
+      "type": "object",
+      "properties": {
+        "argumentType": {
+          "type": "string"
+        },
+        "value": {}
+      }
+    },
+    "CustomAttributeNamedArgument": {
+      "type": "object",
+      "properties": {
+        "memberInfo": {
+          "$ref": "#/definitions/MemberInfo"
+        },
+        "typedValue": {
+          "$ref": "#/definitions/CustomAttributeTypedArgument"
+        },
+        "memberName": {
+          "type": "string"
+        },
+        "isField": {
+          "type": "boolean"
+        }
+      }
+    },
+    "Module": {
+      "type": "object",
+      "x-abstract": true,
+      "properties": {
+        "CustomAttributes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CustomAttributeData"
+          }
+        },
+        "MDStreamVersion": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "FullyQualifiedName": {
+          "type": "string"
+        },
+        "ModuleVersionId": {
+          "type": "string",
+          "format": "guid"
+        },
+        "MetadataToken": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "ScopeName": {
+          "type": "string"
+        },
+        "Name": {
+          "type": "string"
+        },
+        "Assembly": {
+          "$ref": "#/definitions/Assembly"
+        },
+        "ModuleHandle": {
+          "$ref": "#/definitions/ModuleHandle"
+        }
+      }
+    },
+    "Assembly": {
+      "type": "object",
+      "x-abstract": true,
+      "properties": {
+        "CodeBase": {
+          "type": "string"
+        },
+        "EscapedCodeBase": {
+          "type": "string"
+        },
+        "FullName": {
+          "type": "string"
+        },
+        "EntryPoint": {
+          "$ref": "#/definitions/MethodInfo"
+        },
+        "ExportedTypes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "DefinedTypes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "Evidence": {
+          "type": "array",
+          "items": {}
+        },
+        "PermissionSet": {
+          "type": "array",
+          "items": {}
+        },
+        "IsFullyTrusted": {
+          "type": "boolean"
+        },
+        "SecurityRuleSet": {
+          "$ref": "#/definitions/SecurityRuleSet"
+        },
+        "ManifestModule": {
+          "$ref": "#/definitions/Module"
+        },
+        "CustomAttributes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CustomAttributeData"
+          }
+        },
+        "ReflectionOnly": {
+          "type": "boolean"
+        },
+        "Modules": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Module"
+          }
+        },
+        "Location": {
+          "type": "string"
+        },
+        "ImageRuntimeVersion": {
+          "type": "string"
+        },
+        "GlobalAssemblyCache": {
+          "type": "boolean"
+        },
+        "HostContext": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "IsDynamic": {
+          "type": "boolean"
+        }
+      }
+    },
+    "SecurityRuleSet": {
+      "type": "string",
+      "description": "",
+      "x-enumNames": [
+        "None",
+        "Level1",
+        "Level2"
+      ],
+      "enum": [
+        "none",
+        "level1",
+        "level2"
+      ]
+    },
+    "ModuleHandle": {
+      "type": "object",
+      "properties": {
+        "mdStreamVersion": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "InteractionMatcherDelegate": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/MulticastDelegate"
+        },
+        {
+          "type": "object"
+        }
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "$ref": "#/definitions/RegistryObjectType"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "habitat": {
+          "$ref": "#/definitions/EnumHabitat"
+        },
+        "hitBoxSize": {
+          "$ref": "#/definitions/Vec2f"
+        },
+        "deadHitBoxSize": {
+          "$ref": "#/definitions/Vec2f"
+        },
+        "eyeHeight": {
+          "type": "number",
+          "format": "double"
+        },
+        "weight": {
+          "type": "number",
+          "format": "float"
+        },
+        "canClimb": {
+          "type": "boolean"
+        },
+        "canClimbAnywhere": {
+          "type": "boolean"
+        },
+        "fallDamage": {
+          "type": "boolean"
+        },
+        "climbTouchDistance": {
+          "type": "number",
+          "format": "float"
+        },
+        "rotateModelOnClimb": {
+          "type": "boolean"
+        },
+        "knockbackResistance": {
+          "type": "number",
+          "format": "float"
+        },
+        "attributes": {
+          "$ref": "#/definitions/JsonObject"
+        },
+        "client": {
+          "$ref": "#/definitions/ClientEntityConfig"
+        },
+        "server": {
+          "$ref": "#/definitions/ServerEntityConfig"
+        },
+        "sounds": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "idleSoundChance": {
+          "type": "number",
+          "format": "float"
+        },
+        "idleSoundRange": {
+          "type": "number",
+          "format": "float"
+        },
+        "drops": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/BlockDropItemStack"
+          }
+        }
+      }
+    }
+  ]
+}

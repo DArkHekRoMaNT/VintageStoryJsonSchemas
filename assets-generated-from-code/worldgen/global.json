@@ -1,0 +1,49 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "GlobalConfig",
+  "type": "object",
+  "properties": {
+    "waterBlockCode": {
+      "type": "string"
+    },
+    "lakeIceBlockCode": {
+      "type": "string"
+    },
+    "lavaBlockCode": {
+      "type": "string"
+    },
+    "basaltBlockCode": {
+      "type": "string"
+    },
+    "mantleBlockCode": {
+      "type": "string"
+    },
+    "defaultRockCode": {
+      "type": "string"
+    },
+    "waterBlockId": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "lakeIceBlockId": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "lavaBlockId": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "basaltBlockId": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "mantleBlockId": {
+      "type": "integer",
+      "format": "int32"
+    },
+    "defaultRockId": {
+      "type": "integer",
+      "format": "int32"
+    }
+  }
+}

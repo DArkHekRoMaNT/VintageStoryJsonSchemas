@@ -1,0 +1,150 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "LandformsWorldProperty",
+  "definitions": {
+    "LandformVariant": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/WorldPropertyVariant"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "index": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "terrainYThresholds": {
+              "type": "array",
+              "items": {
+                "type": "number",
+                "format": "float"
+              }
+            },
+            "colorInt": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "weightTmp": {
+              "type": "number",
+              "format": "double"
+            },
+            "hexColor": {
+              "type": "string"
+            },
+            "weight": {
+              "type": "number",
+              "format": "double"
+            },
+            "useClimateMap": {
+              "type": "boolean"
+            },
+            "minTemp": {
+              "type": "number",
+              "format": "float"
+            },
+            "maxTemp": {
+              "type": "number",
+              "format": "float"
+            },
+            "minRain": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "maxRain": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "useWindMap": {
+              "type": "boolean"
+            },
+            "minWindStrength": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "maxWindStrength": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "terrainOctaves": {
+              "type": "array",
+              "items": {
+                "type": "number",
+                "format": "double"
+              }
+            },
+            "terrainOctaveThresholds": {
+              "type": "array",
+              "items": {
+                "type": "number",
+                "format": "double"
+              }
+            },
+            "terrainYKeyPositions": {
+              "type": "array",
+              "items": {
+                "type": "number",
+                "format": "float"
+              }
+            },
+            "terrainYKeyThresholds": {
+              "type": "array",
+              "items": {
+                "type": "number",
+                "format": "float"
+              }
+            },
+            "mutations": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/LandformVariant"
+              }
+            },
+            "chance": {
+              "type": "number",
+              "format": "float"
+            }
+          }
+        }
+      ]
+    },
+    "WorldPropertyVariant": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string"
+        }
+      }
+    },
+    "WorldPropertyOfLandformVariant": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string"
+        },
+        "variants": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/LandformVariant"
+          }
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "$ref": "#/definitions/WorldPropertyOfLandformVariant"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "landFormsByIndex": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/LandformVariant"
+          }
+        }
+      }
+    }
+  ]
+}

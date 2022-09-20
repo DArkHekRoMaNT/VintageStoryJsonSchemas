@@ -1,0 +1,14 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Deposits",
+  "type": "object",
+  "properties": {
+    "code": {
+      "type": "string"
+    },
+    "chanceMultiplier": {
+      "type": "number",
+      "format": "float"
+    }
+  }
+}
